@@ -59,30 +59,20 @@ export const COOKIE_SECRET = assertValue(
 )
 
 /**
- * (optional) Minio configuration for file storage
+ * (optional) Supabase S3 configuration for file storage
  */
-export const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT;
-export const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
-export const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
-export const MINIO_BUCKET = process.env.MINIO_BUCKET; // Optional, if not set bucket will be called: medusa-media
+export const S3_FILE_URL = process.env.S3_FILE_URL;
+export const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID;
+export const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY;
+export const S3_REGION = process.env.S3_REGION;
+export const S3_BUCKET = process.env.S3_BUCKET;
+export const S3_ENDPOINT = process.env.S3_ENDPOINT;
 
 /**
- * (optional) Resend API Key and from Email - do not set if using SendGrid
+ * (optional) Resend API Key and from Email
  */
 export const RESEND_API_KEY = process.env.RESEND_API_KEY;
 export const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || process.env.RESEND_FROM;
-
-/**
- * (optionl) SendGrid API Key and from Email - do not set if using Resend
- */
-export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
-export const SENDGRID_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || process.env.SENDGRID_FROM;
-
-/**
- * (optional) Stripe API key and webhook secret
- */
-export const STRIPE_API_KEY = process.env.STRIPE_API_KEY;
-export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 /**
  * (optional) Meilisearch configuration

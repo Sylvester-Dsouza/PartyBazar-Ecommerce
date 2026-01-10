@@ -1,0 +1,37 @@
+{
+  "orders": {
+    "payment": {
+      "refund": {
+        "systemPaymentDesc": "One or more of your payments is a system payment. Be aware, that captures and refunds are not handled by Party Bazaar for such payments."
+      }
+    }
+  },
+  "profile": {
+    "edit": {
+      "usageInsightsHint": "Share usage insights and help us improve Party Bazaar. You can read more about what we collect and how we use it in our <0>documentation</0>."
+    }
+  },
+  "apiKeys": {
+    "create": {
+      "createSecretHint": "Create a new secret API key to access the Party Bazaar API as an authenticated admin user."
+    }
+  },
+  "login": {
+    "title": "Party Bazaar Admin",
+    "hint": "Sign in to access the account area"
+  },
+  "invite": {
+    "title": "Party Bazaar Admin",
+    "hint": "Create your account below",
+    "successHint": "Get started with Party Bazaar Admin right away.",
+    "successAction": "Start Party Bazaar Admin"
+  },
+  "workflowExecutions": {
+    "subtitle": "View and keep track of workflow executions in your Party Bazaar application."
+  },
+  "notifications": {
+    "accessibility": {
+      "description": "Notifications about Party Bazaar activities will be listed here."
+    }
+  }
+}

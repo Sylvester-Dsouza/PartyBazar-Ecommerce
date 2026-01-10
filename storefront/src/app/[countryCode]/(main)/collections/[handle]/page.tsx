@@ -1,27 +1,26 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import {
-  getCollectionByHandle,
-  getCollectionsList,
-} from "@lib/data/collections"
+import { getCollectionByHandle, listCollections } from "@lib/data/collections"
 import { listRegions } from "@lib/data/regions"
 import { StoreCollection, StoreRegion } from "@medusajs/types"
 import CollectionTemplate from "@modules/collections/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 type Props = {
-  params: { handle: string; countryCode: string }
-  searchParams: {
+  params: Promise<{ handle: string; countryCode: string }>
+  searchParams: Promise<{
     page?: string
     sortBy?: SortOptions
-  }
+  }>
 }
 
 export const PRODUCT_LIMIT = 12
 
 export async function generateStaticParams() {
-  const { collections } = await getCollectionsList()
+  const { collections } = await listCollections({
+    fields: "*products",
+  })
 
   if (!collections) {
     return []
@@ -51,22 +50,36 @@ export async function generateStaticParams() {
   return staticParams
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params
   const collection = await getCollectionByHandle(params.handle)
 
   if (!collection) {
     notFound()
   }
 
+  // Use meta_title from metadata if available, otherwise use collection title
+  const metaTitle = (collection.metadata?.meta_title as string) || collection.title
+  const title = metaTitle.includes("Party Bazaar") ? metaTitle : `${metaTitle} | Party Bazaar Store`
+
+  // Use meta_description from metadata if available, otherwise use fallback
+  const metaDescription = (collection.metadata?.meta_description as string) || 
+                         `Shop ${collection.title} collection at Party Bazaar Store`
+
   const metadata = {
-    title: `${collection.title} | Medusa Store`,
-    description: `${collection.title} collection`,
+    title,
+    description: metaDescription,
+    alternates: {
+      canonical: `/${params.countryCode}/collections/${params.handle}`,
+    },
   } as Metadata
 
   return metadata
 }
 
-export default async function CollectionPage({ params, searchParams }: Props) {
+export default async function CollectionPage(props: Props) {
+  const searchParams = await props.searchParams
+  const params = await props.params
   const { sortBy, page } = searchParams
 
   const collection = await getCollectionByHandle(params.handle).then(

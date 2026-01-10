@@ -1,153 +1,264 @@
-import { getCategoriesList } from "@lib/data/categories"
-import { getCollectionsList } from "@lib/data/collections"
-import { Text, clx } from "@medusajs/ui"
-
+import { listCategories } from "@lib/data/categories"
+import { listCollections } from "@lib/data/collections"
+import { Text } from "@medusajs/ui"
+import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import MedusaCTA from "@modules/layout/components/medusa-cta"
 
 export default async function Footer() {
-  const { collections } = await getCollectionsList(0, 6)
-  const { product_categories } = await getCategoriesList(0, 6)
+  const { collections } = await listCollections({
+    fields: "*products",
+  })
+  const productCategories = await listCategories()
 
   return (
-    <footer className="border-t border-ui-border-base w-full">
-      <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
-          <div>
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
-            >
-              Medusa Store
-            </LocalizedClientLink>
-          </div>
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
-            {product_categories && product_categories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Categories
-                </span>
-                <ul
-                  className="grid grid-cols-1 gap-2"
-                  data-testid="footer-categories"
-                >
-                  {product_categories?.slice(0, 6).map((c) => {
-                    if (c.parent_category) {
-                      return
-                    }
-
-                    const children =
-                      c.category_children?.map((child) => ({
-                        name: child.name,
-                        handle: child.handle,
-                        id: child.id,
-                      })) || null
-
-                    return (
-                      <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
-                        key={c.id}
-                      >
-                        <LocalizedClientLink
-                          className={clx(
-                            "hover:text-ui-fg-base",
-                            children && "txt-small-plus"
-                          )}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
-                        >
-                          {c.name}
-                        </LocalizedClientLink>
-                        {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
-                            {children &&
-                              children.map((child) => (
-                                <li key={child.id}>
-                                  <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
-                                    href={`/categories/${child.handle}`}
-                                    data-testid="category-link"
-                                  >
-                                    {child.name}
-                                  </LocalizedClientLink>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
-            {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Collections
-                </span>
-                <ul
-                  className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
-                    {
-                      "grid-cols-2": (collections?.length || 0) > 3,
-                    }
-                  )}
-                >
-                  {collections?.slice(0, 6).map((c) => (
-                    <li key={c.id}>
-                      <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
-                        href={`/collections/${c.handle}`}
-                      >
-                        {c.title}
-                      </LocalizedClientLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Medusa</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
-                <li>
-                  <a
-                    href="https://github.com/medusajs"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    GitHub
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://docs.medusajs.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/medusajs/nextjs-starter-medusa"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Source code
-                  </a>
-                </li>
-              </ul>
+    <footer className="bg-grey-90 text-white">
+      {/* Newsletter Section */}
+      <div className="bg-gradient-to-r from-party-pink-500 to-party-pink-400">
+        <div className="content-container py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Join the Party! 🎉
+              </h3>
+              <p className="text-white/80">
+                Subscribe for exclusive deals, party tips, and new arrivals.
+              </p>
+            </div>
+            <div className="flex w-full md:w-auto gap-3">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 md:w-80 px-5 py-3 rounded-full bg-white/20 text-white placeholder-white/60 border border-white/30 focus:outline-none focus:border-white"
+              />
+              <button className="px-6 py-3 bg-white text-party-pink-500 font-semibold rounded-full hover:bg-grey-5 transition-colors whitespace-nowrap">
+                Subscribe
+              </button>
             </div>
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
-          <Text className="txt-compact-small">
-            © {new Date().getFullYear()} Medusa Store. All rights reserved.
-          </Text>
-          <MedusaCTA />
+      </div>
+
+      {/* Main Footer Content */}
+      <div className="content-container py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-12">
+          {/* Brand Column */}
+          <div className="col-span-2">
+            <LocalizedClientLink href="/" className="inline-block mb-4">
+              <Image
+                src="/pb-logo.webp"
+                alt="Party Bazaar"
+                width={150}
+                height={40}
+                className="brightness-0 invert"
+              />
+            </LocalizedClientLink>
+            <p className="text-grey-30 text-sm mb-6 max-w-xs">
+              Your one-stop shop for all party supplies. Making celebrations memorable since 2024.
+            </p>
+            {/* Social Links */}
+            <div className="flex gap-4">
+              <a href="#" className="w-10 h-10 rounded-full bg-grey-70 flex items-center justify-center hover:bg-party-pink-500 transition-colors">
+                <span className="text-lg">📘</span>
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-grey-70 flex items-center justify-center hover:bg-party-pink-500 transition-colors">
+                <span className="text-lg">📸</span>
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-grey-70 flex items-center justify-center hover:bg-party-pink-500 transition-colors">
+                <span className="text-lg">🐦</span>
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-grey-70 flex items-center justify-center hover:bg-party-pink-500 transition-colors">
+                <span className="text-lg">📌</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Shop Column */}
+          <div>
+            <h4 className="font-semibold text-white mb-4">Shop</h4>
+            <ul className="space-y-3 text-grey-30 text-sm">
+              <li>
+                <LocalizedClientLink href="/store" className="hover:text-party-pink-400 transition-colors">
+                  All Products
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/collections/new-arrivals" className="hover:text-party-pink-400 transition-colors">
+                  New Arrivals
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/collections/best-sellers" className="hover:text-party-pink-400 transition-colors">
+                  Best Sellers
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/collections/sale" className="hover:text-party-pink-400 transition-colors">
+                  Sale
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/collections/bundles" className="hover:text-party-pink-400 transition-colors">
+                  Party Bundles
+                </LocalizedClientLink>
+              </li>
+            </ul>
+          </div>
+
+          {/* Categories Column */}
+          <div>
+            <h4 className="font-semibold text-white mb-4">Categories</h4>
+            <ul className="space-y-3 text-grey-30 text-sm">
+              <li>
+                <LocalizedClientLink href="/categories/balloons" className="hover:text-party-pink-400 transition-colors">
+                  Balloons
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/categories/decorations" className="hover:text-party-pink-400 transition-colors">
+                  Decorations
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/categories/tableware" className="hover:text-party-pink-400 transition-colors">
+                  Tableware
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/categories/party-favors" className="hover:text-party-pink-400 transition-colors">
+                  Party Favors
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/categories/costumes" className="hover:text-party-pink-400 transition-colors">
+                  Costumes
+                </LocalizedClientLink>
+              </li>
+            </ul>
+          </div>
+
+          {/* Support Column */}
+          <div>
+            <h4 className="font-semibold text-white mb-4">Support</h4>
+            <ul className="space-y-3 text-grey-30 text-sm">
+              <li>
+                <LocalizedClientLink href="/contact" className="hover:text-party-pink-400 transition-colors">
+                  Contact Us
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/faq" className="hover:text-party-pink-400 transition-colors">
+                  FAQs
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/shipping" className="hover:text-party-pink-400 transition-colors">
+                  Shipping Info
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/returns" className="hover:text-party-pink-400 transition-colors">
+                  Returns & Refunds
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/track-order" className="hover:text-party-pink-400 transition-colors">
+                  Track Order
+                </LocalizedClientLink>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company Column */}
+          <div>
+            <h4 className="font-semibold text-white mb-4">Company</h4>
+            <ul className="space-y-3 text-grey-30 text-sm">
+              <li>
+                <LocalizedClientLink href="/about" className="hover:text-party-pink-400 transition-colors">
+                  About Us
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/blog" className="hover:text-party-pink-400 transition-colors">
+                  Party Blog
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/careers" className="hover:text-party-pink-400 transition-colors">
+                  Careers
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/privacy" className="hover:text-party-pink-400 transition-colors">
+                  Privacy Policy
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/terms" className="hover:text-party-pink-400 transition-colors">
+                  Terms of Service
+                </LocalizedClientLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Trust Badges */}
+        <div className="mt-12 pt-8 border-t border-grey-70">
+          <div className="flex flex-wrap items-center justify-center gap-8 mb-8">
+            <div className="flex items-center gap-2 text-grey-30">
+              <span className="text-2xl">🚚</span>
+              <span className="text-sm">Free Shipping over ₹499</span>
+            </div>
+            <div className="flex items-center gap-2 text-grey-30">
+              <span className="text-2xl">🔒</span>
+              <span className="text-sm">Secure Payments</span>
+            </div>
+            <div className="flex items-center gap-2 text-grey-30">
+              <span className="text-2xl">↩️</span>
+              <span className="text-sm">Easy Returns</span>
+            </div>
+            <div className="flex items-center gap-2 text-grey-30">
+              <span className="text-2xl">💬</span>
+              <span className="text-sm">24/7 Support</span>
+            </div>
+          </div>
+
+          {/* Payment Methods */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+            <span className="text-grey-40 text-sm">We Accept:</span>
+            <div className="flex gap-3">
+              <div className="w-12 h-8 bg-grey-70 rounded flex items-center justify-center text-xs text-grey-30">VISA</div>
+              <div className="w-12 h-8 bg-grey-70 rounded flex items-center justify-center text-xs text-grey-30">MC</div>
+              <div className="w-12 h-8 bg-grey-70 rounded flex items-center justify-center text-xs text-grey-30">UPI</div>
+              <div className="w-12 h-8 bg-grey-70 rounded flex items-center justify-center text-xs text-grey-30">GPay</div>
+              <div className="w-12 h-8 bg-grey-70 rounded flex items-center justify-center text-xs text-grey-30">PhonePe</div>
+              <div className="w-12 h-8 bg-grey-70 rounded flex items-center justify-center text-xs text-grey-30">COD</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="bg-grey-80">
+        <div className="content-container py-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-grey-40 text-sm">
+            <Text>
+              © {new Date().getFullYear()} Party Bazaar. All rights reserved.
+            </Text>
+            <div className="flex items-center gap-6">
+              <LocalizedClientLink href="/privacy" className="hover:text-white transition-colors">
+                Privacy
+              </LocalizedClientLink>
+              <LocalizedClientLink href="/terms" className="hover:text-white transition-colors">
+                Terms
+              </LocalizedClientLink>
+              <LocalizedClientLink href="/sitemap" className="hover:text-white transition-colors">
+                Sitemap
+              </LocalizedClientLink>
+            </div>
+            <Text className="text-grey-50">
+              Made with 🎉 in India
+            </Text>
+          </div>
         </div>
       </div>
     </footer>

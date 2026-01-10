@@ -2,6 +2,105 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* ============================================ */
+/* PARTY BAZAAR THEME - Global CSS Variable Overrides */
+/* This overrides the Medusa UI preset colors */
+/* ============================================ */
+
+:root {
+  /* Primary Interactive Colors - Party Pink */
+  --fg-interactive: #F472B6;
+  --fg-interactive-hover: #EC4899;
+  
+  /* Background Colors */
+  --bg-interactive: #F472B6;
+  --bg-interactive-hover: #EC4899;
+  --bg-highlight: #FFF5F7;
+  --bg-highlight-hover: #FFEEF2;
+  --bg-subtle: #FDF8F3;
+  --bg-subtle-hover: #FFEEF2;
+  
+  /* Border Colors */
+  --border-interactive: #F472B6;
+  --border-base: #FECDD6;
+  --border-strong: #FDB4C4;
+  
+  /* Button Colors */
+  --button-inverted: #F472B6;
+  --button-inverted-hover: #EC4899;
+  --button-inverted-pressed: #DB2777;
+  
+  /* Focus Ring */
+  --focus-ring: #F472B6;
+  
+  /* Tag/Badge Colors */
+  --tag-neutral-bg: #FFF5F7;
+  --tag-neutral-bg-hover: #FFEEF2;
+  --tag-neutral-text: #EC4899;
+  --tag-neutral-icon: #F472B6;
+  --tag-neutral-border: #FECDD6;
+}
+
+/* Override Medusa UI Button Styles */
+[data-mode="light"] {
+  /* Primary button - Party Pink */
+  --button-primary: #F472B6;
+  --button-primary-hover: #EC4899;
+  --button-primary-pressed: #DB2777;
+  
+  /* Secondary accents - Party Sky Blue */
+  --fg-secondary: #0EA5E9;
+  --bg-secondary: #E0F2FE;
+  
+  /* Interactive states */
+  --fg-interactive: #F472B6;
+  --fg-interactive-hover: #EC4899;
+  --bg-interactive: #F472B6;
+  
+  /* Subtle backgrounds with party cream */
+  --bg-subtle: #FDF8F3;
+  --bg-subtle-hover: #FFEEF2;
+  --bg-subtle-pressed: #FECDD6;
+  
+  /* Field backgrounds */
+  --bg-field: #FFFFFF;
+  --bg-field-hover: #FFF5F7;
+  
+  /* Borders */
+  --border-base: #FECDD6;
+  --border-strong: #FDB4C4;
+  --border-interactive: #F472B6;
+  
+  /* Focus states */
+  --focus-ring: rgba(244, 114, 182, 0.5);
+  
+  /* Shadows with pink tint */
+  --shadow-elevation-card-rest: 0 1px 2px 0 rgba(244, 114, 182, 0.05);
+  --shadow-elevation-card-hover: 0 4px 8px 0 rgba(244, 114, 182, 0.1);
+}
+
+/* Override specific Medusa UI component styles */
+@layer base {
+  /* Make all buttons more rounded by default */
+  button, [role="button"], .btn {
+    border-radius: 9999px !important;
+  }
+  
+  /* Cards more rounded */
+  [class*="rounded-rounded"] {
+    border-radius: 16px !important;
+  }
+  
+  /* Links use party pink */
+  a:not([class]) {
+    color: #F472B6;
+  }
+  
+  a:not([class]):hover {
+    color: #EC4899;
+  }
+}
+
 @layer utilities {
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
@@ -51,11 +150,97 @@
 
 @layer components {
   .content-container {
-    @apply max-w-[1440px] w-full mx-auto px-6;
+    @apply w-full mx-auto px-8 md:px-12 lg:px-16;
   }
 
   .contrast-btn {
     @apply px-4 py-2 border border-black rounded-full hover:bg-black hover:text-white transition-colors duration-200 ease-in;
+  }
+
+  /* Party Bazaar Theme - Two Main Button Colors: Dark & White */
+  .party-btn {
+    @apply px-8 py-4 rounded-full font-semibold text-sm transition-all duration-200 ease-in-out;
+  }
+
+  /* Primary Button - Dark */
+  .party-btn-primary {
+    @apply party-btn bg-party-dark text-white hover:bg-grey-80 hover:shadow-lg;
+  }
+
+  /* Secondary Button - White with dark border */
+  .party-btn-secondary {
+    @apply party-btn bg-white text-party-dark border border-party-dark hover:bg-grey-5 hover:shadow-lg;
+  }
+
+  /* Outline Button - White background with dark text */
+  .party-btn-outline {
+    @apply party-btn bg-white border-2 border-grey-20 text-party-dark hover:border-party-dark hover:bg-grey-5;
+  }
+
+  /* Ghost Button - Transparent with dark text */
+  .party-btn-ghost {
+    @apply party-btn bg-transparent text-party-dark hover:bg-grey-10;
+  }
+
+  /* Inverted Button - For dark backgrounds */
+  .party-btn-inverted {
+    @apply party-btn bg-white text-party-dark hover:bg-grey-5 hover:shadow-lg;
+  }
+
+  /* Party Bazaar Cards */
+  .party-card {
+    @apply bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  .party-card-pink {
+    @apply party-card border border-party-pink-100 hover:border-party-pink-200;
+  }
+
+  .party-card-sky {
+    @apply party-card border border-party-sky-100 hover:border-party-sky-200;
+  }
+
+  /* Party Bazaar Headings - Bold & Clean */
+  .party-heading {
+    @apply font-bold tracking-tight text-grey-90;
+  }
+
+  .party-heading-xl {
+    @apply party-heading text-4xl md:text-5xl;
+  }
+
+  .party-heading-lg {
+    @apply party-heading text-3xl md:text-4xl;
+  }
+
+  .party-heading-md {
+    @apply party-heading text-2xl md:text-3xl;
+  }
+
+  .party-heading-sm {
+    @apply party-heading text-xl md:text-2xl;
+  }
+
+  /* Category Pills (like in the reference image) */
+  .party-pill {
+    @apply inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-grey-20 text-grey-70 font-medium hover:border-party-pink-300 hover:bg-party-pink-50 transition-all duration-200 cursor-pointer;
+  }
+
+  .party-pill-active {
+    @apply party-pill bg-party-pink-100 border-party-pink-300 text-party-pink-600;
+  }
+
+  /* Party Section Background */
+  .party-section-cream {
+    @apply bg-party-cream;
+  }
+
+  .party-section-pink {
+    @apply bg-party-pink-50;
+  }
+
+  .party-section-sky {
+    @apply bg-party-sky-50;
   }
 
   .text-xsmall-regular {

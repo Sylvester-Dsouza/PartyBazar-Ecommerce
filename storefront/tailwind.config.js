@@ -34,6 +34,34 @@ module.exports = {
           80: "#1F2937",
           90: "#111827",
         },
+        // Party Bazaar Theme Colors
+        party: {
+          // Button Colors - Only two main colors
+          dark: "#212421",
+          white: "#FFFFFF",
+          pink: {
+            50: "#FFF5F7",
+            100: "#FFEEF2",
+            200: "#FECDD6",
+            300: "#FDB4C4",
+            400: "#FB8DA8",
+            500: "#F472B6",
+            600: "#EC4899",
+          },
+          sky: {
+            50: "#F0F9FF",
+            100: "#E0F2FE",
+            200: "#BAE6FD",
+            300: "#7DD3FC",
+            400: "#38BDF8",
+            500: "#0EA5E9",
+            600: "#0284C7",
+          },
+          cream: "#FDF8F3",
+          peach: "#FFEEE4",
+          mint: "#E8FFF5",
+          lavender: "#F5F0FF",
+        },
       },
       borderRadius: {
         none: "0px",
@@ -41,6 +69,10 @@ module.exports = {
         base: "4px",
         rounded: "8px",
         large: "16px",
+        xl: "20px",
+        "2xl": "24px",
+        "3xl": "32px",
+        pill: "9999px",
         circle: "9999px",
       },
       maxWidth: {
@@ -69,6 +101,19 @@ module.exports = {
           "Ubuntu",
           "sans-serif",
         ],
+      },
+      letterSpacing: {
+        tighter: "-0.05em",
+        tight: "-0.025em",
+        normal: "0",
+        wide: "0.025em",
+      },
+      fontWeight: {
+        normal: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "700",
+        extrabold: "800",
       },
       keyframes: {
         ring: {

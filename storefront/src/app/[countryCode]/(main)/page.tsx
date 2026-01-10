@@ -1,37 +1,63 @@
 import { Metadata } from "next"
 
-import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
-import { getCollectionsWithProducts } from "@lib/data/collections"
-import { getRegion } from "@lib/data/regions"
+import CategoryPills from "@modules/home/components/category-pills"
+import ShopThemes from "@modules/home/components/shop-themes"
+import ShopCategories from "@modules/home/components/shop-categories"
+import ProductGrid from "@modules/home/components/product-grid"
+import CuratedDeals from "@modules/home/components/curated-deals"
+import OnSale from "@modules/home/components/on-sale"
+import CollectionBanner from "@modules/home/components/collection-banner"
+import BestSellers from "@modules/home/components/best-sellers"
+import KawaiiBanner from "@modules/home/components/kawaii-banner"
+import PromoFooter from "@modules/home/components/promo-footer"
 
 export const metadata: Metadata = {
-  title: "Medusa Next.js Starter Template",
+  title: "Party Bazaar - Make Your Party Unforgettable",
   description:
-    "A performant frontend ecommerce starter template with Next.js 14 and Medusa.",
+    "Discover amazing party supplies, decorations, and everything you need to create magical moments. Shop balloons, banners, tableware and more.",
 }
 
-export default async function Home({
-  params,
-}: {
+export default async function Home(props: {
   params: Promise<{ countryCode: string }>
 }) {
-  const { countryCode } = await params
-  const collections = await getCollectionsWithProducts(countryCode)
-  const region = await getRegion(countryCode)
-
-  if (!collections || !region) {
-    return null
-  }
+  const params = await props.params
+  const { countryCode } = params
 
   return (
     <>
+      {/* Hero Section */}
       <Hero />
-      <div className="py-12">
-        <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections} region={region} />
-        </ul>
-      </div>
+      
+      {/* Category Pills - Let's Get the Party Started */}
+      <CategoryPills />
+      
+      {/* Shop Party Themes */}
+      <ShopThemes />
+      
+      {/* Shop by Category */}
+      <ShopCategories />
+      
+      {/* Featured Products Grid */}
+      <ProductGrid title="Featured Products" countryCode={countryCode} />
+      
+      {/* Curated Deals & New Arrivals Banners */}
+      <CuratedDeals />
+      
+      {/* On Sale Products */}
+      <OnSale />
+      
+      {/* Ambient Blossom Collection Banner */}
+      <CollectionBanner />
+      
+      {/* Best Sellers */}
+      <BestSellers />
+      
+      {/* Kawaii Party Essentials Banner */}
+      <KawaiiBanner />
+      
+      {/* Bottom Promo Section */}
+      <PromoFooter />
     </>
   )
 }
