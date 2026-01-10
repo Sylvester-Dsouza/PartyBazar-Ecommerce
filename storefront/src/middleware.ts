@@ -1,14 +1,7 @@
 import { HttpTypes } from "@medusajs/types"
 import { NextRequest, NextResponse } from "next/server"
 
-// Ensure BACKEND_URL has a protocol
-const rawBackendUrl = process.env.MEDUSA_BACKEND_URL
-const BACKEND_URL = rawBackendUrl 
-  ? (rawBackendUrl.startsWith('http://') || rawBackendUrl.startsWith('https://') 
-      ? rawBackendUrl 
-      : `https://${rawBackendUrl}`)
-  : undefined
-
+const BACKEND_URL = process.env.MEDUSA_BACKEND_URL
 const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "us"
 

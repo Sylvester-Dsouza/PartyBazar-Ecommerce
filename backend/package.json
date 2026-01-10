@@ -13,6 +13,7 @@
     "medusa"
   ],
   "scripts": {
+    "preinstall": "npm config set legacy-peer-deps true",
     "build": "medusa build && node src/scripts/postBuild.js",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "ib": "init-backend",
@@ -55,10 +56,5 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "vite": "^5.4.21"
-  },
-  "packageManager": "pnpm@9.10.0",
-  "engines": {
-    "node": "22.x",
-    "npm": "10.x"
   }
 }
