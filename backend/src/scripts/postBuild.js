@@ -27,6 +27,16 @@ if (fs.existsSync(envPath)) {
   );
 }
 
+// Copy medusa-config.ts (required for migrations and start command)
+const medusaConfigPath = path.join(process.cwd(), 'medusa-config.ts');
+if (fs.existsSync(medusaConfigPath)) {
+  fs.copyFileSync(
+    medusaConfigPath,
+    path.join(MEDUSA_SERVER_PATH, 'medusa-config.ts')
+  );
+  console.log('Copied medusa-config.ts to .medusa/server');
+}
+
 // Install dependencies
 console.log('Installing dependencies in .medusa/server...');
 execSync('npm ci --omit=dev', { 
