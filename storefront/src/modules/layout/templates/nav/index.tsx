@@ -5,6 +5,7 @@ import { StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
+import SearchButton from "@modules/layout/components/search-button"
 
 export default async function Nav() {
   const regions = await listRegions().then((regions: StoreRegion[]) => regions)
@@ -77,12 +78,8 @@ export default async function Nav() {
 
           {/* Right Side - Search, Account, Cart, Menu */}
           <div className="flex items-center gap-x-4 h-full">
-            {/* Search Icon */}
-            <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-grey-5 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
+            {/* Search Button - Client Component */}
+            <SearchButton countryCode={regions[0]?.countries?.[0]?.iso_2 || "us"} />
 
             {/* Account Icon */}
             <LocalizedClientLink

@@ -74,6 +74,22 @@ export default defineConfig({
       }
     },
     ...(REDIS_URL ? [{
+      resolve: '@medusajs/medusa/caching',
+      options: {
+        providers: [
+          {
+            resolve: '@medusajs/caching-redis',
+            id: 'caching-redis',
+            is_default: true,
+            options: {
+              redisUrl: REDIS_URL,
+              ttl: 3600,
+            }
+          }
+        ]
+      }
+    }] : []),
+    ...(REDIS_URL ? [{
       key: Modules.EVENT_BUS,
       resolve: '@medusajs/event-bus-redis',
       options: {
@@ -107,30 +123,28 @@ export default defineConfig({
       }
     }] : [])
   ],
-  // Meilisearch plugin disabled for local development
-  // Uncomment when deploying to Railway with Meilisearch service
-  // plugins: [
-  //   ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
-  //     resolve: '@rokmohar/medusa-plugin-meilisearch',
-  //     options: {
-  //       config: {
-  //         host: MEILISEARCH_HOST,
-  //         apiKey: MEILISEARCH_ADMIN_KEY
-  //       },
-  //       settings: {
-  //         products: {
-  //           type: 'products',
-  //           enabled: true,
-  //           fields: ['id', 'title', 'description', 'handle', 'variant_sku', 'thumbnail'],
-  //           indexSettings: {
-  //             searchableAttributes: ['title', 'description', 'variant_sku'],
-  //             displayedAttributes: ['id', 'handle', 'title', 'description', 'variant_sku', 'thumbnail'],
-  //             filterableAttributes: ['id', 'handle'],
-  //           },
-  //           primaryKey: 'id',
-  //         }
-  //       }
-  //     }
-  //   }] : [])
-  // ]
+  plugins: [
+    ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
+      resolve: '@rokmohar/medusa-plugin-meilisearch',
+      options: {
+        config: {
+          host: MEILISEARCH_HOST,
+          apiKey: MEILISEARCH_ADMIN_KEY
+        },
+        settings: {
+          products: {
+            type: 'products',
+            enabled: true,
+            fields: ['id', 'title', 'description', 'handle', 'variant_sku', 'thumbnail'],
+            indexSettings: {
+              searchableAttributes: ['title', 'description', 'variant_sku'],
+              displayedAttributes: ['id', 'handle', 'title', 'description', 'variant_sku', 'thumbnail'],
+              filterableAttributes: ['id', 'handle'],
+            },
+            primaryKey: 'id',
+          }
+        }
+      }
+    }] : [])
+  ]
 })

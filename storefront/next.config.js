@@ -46,6 +46,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "ngucdraeherwyfmdmxra.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "backend-production-ea30.up.railway.app",
+      },
       ...(S3_HOSTNAME && S3_PATHNAME
         ? [
             {
