@@ -19,7 +19,7 @@
   Prebaked medusajs 2.0 monorepo
 </h2>
 <h4 align="center">
-  Backend + Storefront + postgres + redis + MinIO + MeiliSearch
+  Backend + Storefront + Supabase postgres + redis + MeiliSearch
 </h4>
 <p align="center">
 Combine Medusa's modules for your commerce backend with the newest Next.js 14 features for a performant storefront.</p>

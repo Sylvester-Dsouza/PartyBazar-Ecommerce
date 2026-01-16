@@ -18,7 +18,7 @@ const CategoryPills = () => {
   const [activeCategory, setActiveCategory] = useState("birthday")
 
   return (
-    <section className="pb-16" style={{ backgroundColor: '#F2EDE9' }}>
+    <section className="pb-16 -mt-20 relative z-20" style={{ backgroundColor: '#F2EDE9' }}>
       <div className="content-container">
         {/* White rounded container */}
         <div className="bg-white rounded-3xl shadow-lg px-8 py-12 md:px-12 md:py-16">

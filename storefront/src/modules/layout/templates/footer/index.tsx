@@ -12,32 +12,6 @@ export default async function Footer() {
 
   return (
     <footer className="bg-grey-90 text-white">
-      {/* Newsletter Section */}
-      <div className="bg-gradient-to-r from-party-pink-500 to-party-pink-400">
-        <div className="content-container py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                Join the Party! 🎉
-              </h3>
-              <p className="text-white/80">
-                Subscribe for exclusive deals, party tips, and new arrivals.
-              </p>
-            </div>
-            <div className="flex w-full md:w-auto gap-3">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 md:w-80 px-5 py-3 rounded-full bg-white/20 text-white placeholder-white/60 border border-white/30 focus:outline-none focus:border-white"
-              />
-              <button className="px-6 py-3 bg-white text-party-pink-500 font-semibold rounded-full hover:bg-grey-5 transition-colors whitespace-nowrap">
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer Content */}
       <div className="content-container py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-12">

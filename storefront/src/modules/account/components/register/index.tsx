@@ -66,6 +66,18 @@ const Register = ({ setCurrentView }: Props) => {
             autoComplete="new-password"
             data-testid="password-input"
           />
+          <div className="flex items-center gap-2 mt-4">
+            <input
+              type="checkbox"
+              id="is_wholesaler"
+              name="is_wholesaler"
+              className="w-4 h-4 text-pink-500 border-gray-300 rounded focus:ring-pink-500"
+              data-testid="wholesaler-checkbox"
+            />
+            <label htmlFor="is_wholesaler" className="text-sm text-ui-fg-base">
+              I am a Wholesaler
+            </label>
+          </div>
         </div>
         <ErrorMessage error={message} data-testid="register-error" />
         <span className="text-center text-ui-fg-base text-small-regular mt-6">

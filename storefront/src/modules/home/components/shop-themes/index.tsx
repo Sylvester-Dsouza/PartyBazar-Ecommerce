@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useRef, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -15,6 +16,49 @@ const themes = [
 ]
 
 const ShopThemes = () => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(true)
+
+  const checkScrollButtons = () => {
+    const container = scrollContainerRef.current
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0)
+      setCanScrollRight(container.scrollLeft < container.scrollWidth - container.clientWidth)
+    }
+  }
+
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (container) {
+      checkScrollButtons()
+      container.addEventListener('scroll', checkScrollButtons)
+      return () => container.removeEventListener('scroll', checkScrollButtons)
+    }
+  }, [])
+
+  const scrollLeft = () => {
+    const container = scrollContainerRef.current
+    if (container) {
+      const scrollAmount = container.clientWidth * 0.8
+      container.scrollTo({
+        left: Math.max(0, container.scrollLeft - scrollAmount),
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  const scrollRight = () => {
+    const container = scrollContainerRef.current
+    if (container) {
+      const scrollAmount = container.clientWidth * 0.8
+      container.scrollTo({
+        left: Math.min(container.scrollLeft + scrollAmount, container.scrollWidth - container.clientWidth),
+        behavior: 'smooth'
+      })
+    }
+  }
+
   return (
     <section className="py-12">
       <div className="content-container">
@@ -24,16 +68,35 @@ const ShopThemes = () => {
             <p className="text-grey-50 mt-1">Find the perfect theme for your celebration</p>
           </div>
           <div className="flex gap-2">
-            <button className="w-10 h-10 rounded-full border border-grey-20 flex items-center justify-center hover:bg-grey-5 transition-colors">
-              <ChevronLeft className="w-5 h-5" />
+            <button
+              onClick={scrollLeft}
+              disabled={!canScrollLeft}
+              className={`w-10 h-10 rounded-full border border-grey-20 flex items-center justify-center transition-all ${
+                canScrollLeft 
+                  ? 'bg-white text-grey-70 hover:bg-party-pink-500 hover:text-white hover:border-party-pink-500 cursor-pointer' 
+                  : 'bg-grey-5 text-grey-30 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4 flex-shrink-0" />
             </button>
-            <button className="w-10 h-10 rounded-full border border-grey-20 flex items-center justify-center hover:bg-grey-5 transition-colors">
-              <ChevronRight className="w-5 h-5" />
+            <button
+              onClick={scrollRight}
+              disabled={!canScrollRight}
+              className={`w-10 h-10 rounded-full border border-grey-20 flex items-center justify-center transition-all ${
+                canScrollRight 
+                  ? 'bg-white text-grey-70 hover:bg-party-pink-500 hover:text-white hover:border-party-pink-500 cursor-pointer' 
+                  : 'bg-grey-5 text-grey-30 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <ChevronRight className="w-4 h-4 flex-shrink-0" />
             </button>
           </div>
         </div>
 
-        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+        <div 
+          ref={scrollContainerRef}
+          className="flex gap-4 overflow-x-auto no-scrollbar pb-4 scroll-smooth"
+        >
           {themes.map((theme) => (
             <LocalizedClientLink
               key={theme.id}

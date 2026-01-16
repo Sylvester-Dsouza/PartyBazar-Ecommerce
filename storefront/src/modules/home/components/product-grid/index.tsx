@@ -31,8 +31,11 @@ const ProductGrid = async ({
       <div className="content-container">
         <div className="flex items-center justify-between mb-6">
           <h2 className="party-heading-md">{title}</h2>
-          <LocalizedClientLink href="/store" className="text-party-pink-500 font-medium hover:text-party-pink-600 transition-colors">
-            View All →
+          <LocalizedClientLink href="/store" className="inline-flex items-center gap-2 px-4 py-2 border border-party-pink-500 text-party-pink-500 font-medium rounded-full hover:bg-party-pink-50 transition-colors">
+            <span>View All</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </LocalizedClientLink>
         </div>
 

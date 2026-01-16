@@ -82,7 +82,7 @@ const CartDropdown = ({
       <Popover className="relative h-full">
         <PopoverButton className="h-full">
           <LocalizedClientLink
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-party-dark text-white hover:bg-grey-80 transition-colors relative"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-grey-70 text-white hover:bg-grey-80 transition-colors relative"
             href="/cart"
             data-testid="nav-cart-link"
           >
@@ -90,7 +90,7 @@ const CartDropdown = ({
               <path d="M7.5 18.333a.833.833 0 1 0 0-1.666.833.833 0 0 0 0 1.666zM16.667 18.333a.833.833 0 1 0 0-1.666.833.833 0 0 0 0 1.666zM.833 1.667h2.5L5.4 11.992a1.667 1.667 0 0 0 1.667 1.341h8.1a1.667 1.667 0 0 0 1.666-1.341l1.334-7H4.167" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+              <span className="absolute -top-1 -right-1 bg-grey-70 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
                 {totalItems}
               </span>
             )}

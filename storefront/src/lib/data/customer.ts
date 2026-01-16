@@ -61,11 +61,15 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
 
 export async function signup(_currentState: unknown, formData: FormData) {
   const password = formData.get("password") as string
+  const isWholesaler = formData.get("is_wholesaler") === "on"
   const customerForm = {
     email: formData.get("email") as string,
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
     phone: formData.get("phone") as string,
+    metadata: {
+      is_wholesaler: isWholesaler,
+    },
   }
 
   try {

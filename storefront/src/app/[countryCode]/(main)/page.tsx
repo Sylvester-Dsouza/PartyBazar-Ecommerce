@@ -7,10 +7,8 @@ import ShopCategories from "@modules/home/components/shop-categories"
 import ProductGrid from "@modules/home/components/product-grid"
 import CuratedDeals from "@modules/home/components/curated-deals"
 import OnSale from "@modules/home/components/on-sale"
+import BentoGrid from "@modules/home/components/bento-grid"
 import CollectionBanner from "@modules/home/components/collection-banner"
-import BestSellers from "@modules/home/components/best-sellers"
-import KawaiiBanner from "@modules/home/components/kawaii-banner"
-import PromoFooter from "@modules/home/components/promo-footer"
 
 export const metadata: Metadata = {
   title: "Party Bazaar - Make Your Party Unforgettable",
@@ -45,19 +43,13 @@ export default async function Home(props: {
       <CuratedDeals />
       
       {/* On Sale Products */}
-      <OnSale />
+      <OnSale countryCode={countryCode} />
+      
+      {/* Bento Grid Features */}
+      <BentoGrid />
       
       {/* Ambient Blossom Collection Banner */}
       <CollectionBanner />
-      
-      {/* Best Sellers */}
-      <BestSellers />
-      
-      {/* Kawaii Party Essentials Banner */}
-      <KawaiiBanner />
-      
-      {/* Bottom Promo Section */}
-      <PromoFooter />
     </>
   )
 }
