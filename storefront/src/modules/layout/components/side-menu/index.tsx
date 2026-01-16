@@ -8,16 +8,28 @@ import { Fragment } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CountrySelect from "../country-select"
 import { HttpTypes } from "@medusajs/types"
+import { MenuItem } from "@lib/data/menu"
 
-const SideMenuItems = {
-  Home: "/",
-  Store: "/store",
-  Account: "/account",
-  Cart: "/cart",
+// Fallback menu items for mobile
+const FALLBACK_SIDE_MENU_ITEMS = [
+  { id: "1", title: "Home", url: "/" },
+  { id: "2", title: "Store", url: "/store" },
+  { id: "3", title: "Account", url: "/account" },
+  { id: "4", title: "Cart", url: "/cart" },
+]
+
+type SideMenuProps = {
+  regions: HttpTypes.StoreRegion[] | null
+  menuItems?: MenuItem[]
 }
 
-const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
+const SideMenu = ({ regions, menuItems }: SideMenuProps) => {
   const toggleState = useToggleState()
+
+  // Use provided menu items or fallback
+  const items = menuItems && menuItems.length > 0
+    ? menuItems
+    : FALLBACK_SIDE_MENU_ITEMS
 
   return (
     <div className="h-full">
@@ -63,20 +75,25 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
                       </button>
                     </div>
                     <ul className="flex flex-col gap-6 items-start justify-start">
-                      {Object.entries(SideMenuItems).map(([name, href]) => {
-                        return (
-                          <li key={name}>
-                            <LocalizedClientLink
-                              href={href}
-                              className="text-3xl leading-10 hover:text-ui-fg-disabled"
-                              onClick={close}
-                              data-testid={`${name.toLowerCase()}-link`}
-                            >
-                              {name}
-                            </LocalizedClientLink>
-                          </li>
-                        )
-                      })}
+                      {items.map((item: any) => (
+                        <li key={item.id}>
+                          <LocalizedClientLink
+                            href={item.url}
+                            className="text-3xl leading-10 hover:text-ui-fg-disabled flex items-center gap-2"
+                            onClick={close}
+                            data-testid={`${item.title.toLowerCase().replace(/\s+/g, '-')}-link`}
+                            target={item.open_in_new_tab ? "_blank" : undefined}
+                            rel={item.open_in_new_tab ? "noopener noreferrer" : undefined}
+                          >
+                            {item.title}
+                            {item.highlight && item.highlight_text && (
+                              <span className="text-sm bg-party-sky-500 text-white px-2 py-0.5 rounded-full">
+                                {item.highlight_text}
+                              </span>
+                            )}
+                          </LocalizedClientLink>
+                        </li>
+                      ))}
                     </ul>
                     <div className="flex flex-col gap-y-6">
                       <div
@@ -114,3 +131,4 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
 }
 
 export default SideMenu
+

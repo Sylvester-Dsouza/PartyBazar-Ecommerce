@@ -29,7 +29,7 @@ export default async function ProductRail({
     <div className="content-container py-12 small:py-24">
       <div className="flex justify-between mb-8">
         <Text className="txt-xlarge">{collection.title}</Text>
-        <LocalizedClientLink href={`/collections/${collection.handle}`} className="inline-flex items-center gap-2 px-4 py-2 border border-party-pink-500 text-party-pink-500 font-medium rounded-full hover:bg-party-pink-50 transition-colors">
+        <LocalizedClientLink href={`/collections/${collection.handle}`} className="inline-flex items-center gap-2 px-4 py-2 border border-party-dark text-party-dark font-medium rounded-full hover:bg-party-dark hover:text-white transition-colors">
           <span>View all</span>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

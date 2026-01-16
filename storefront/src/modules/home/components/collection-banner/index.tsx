@@ -1,4 +1,4 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Button from "@modules/common/components/button"
 
 const CollectionBanner = () => {
   return (
@@ -24,11 +24,9 @@ const CollectionBanner = () => {
               <p className="text-grey-60 mb-6 max-w-md">
                 Elegant floral-themed party supplies perfect for spring celebrations, garden parties, and romantic events.
               </p>
-              <LocalizedClientLink href="/collections/ambient-blossom">
-                <button className="party-btn-primary">
-                  Shop Collection
-                </button>
-              </LocalizedClientLink>
+              <Button href="/collections/ambient-blossom" variant="primary">
+                Shop Collection
+              </Button>
             </div>
           </div>
         </div>

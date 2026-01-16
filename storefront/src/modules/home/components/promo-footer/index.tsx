@@ -1,4 +1,4 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Button from "@modules/common/components/button"
 
 const PromoFooter = () => {
   return (
@@ -13,11 +13,9 @@ const PromoFooter = () => {
           <p className="text-white/80 mb-8 max-w-lg mx-auto">
             Every product is handpicked to ensure your party is nothing short of amazing. Quality guaranteed.
           </p>
-          <LocalizedClientLink href="/store">
-            <button className="bg-white text-party-sky-600 px-8 py-4 rounded-full font-semibold hover:bg-grey-5 transition-colors text-lg">
-              Start Shopping
-            </button>
-          </LocalizedClientLink>
+          <Button href="/store" variant="secondary" size="lg">
+            Start Shopping
+          </Button>
         </div>
       </div>
     </section>

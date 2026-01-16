@@ -8,100 +8,104 @@
 /* ============================================ */
 
 :root {
-  /* Primary Interactive Colors - Party Pink */
-  --fg-interactive: #F472B6;
-  --fg-interactive-hover: #EC4899;
-  
+  /* Primary Interactive Colors - Dark */
+  --fg-interactive: #1A1A1A;
+  --fg-interactive-hover: #333333;
+
   /* Background Colors */
-  --bg-interactive: #F472B6;
-  --bg-interactive-hover: #EC4899;
-  --bg-highlight: #FFF5F7;
-  --bg-highlight-hover: #FFEEF2;
+  --bg-interactive: #1A1A1A;
+  --bg-interactive-hover: #333333;
+  --bg-highlight: #F5F5F5;
+  --bg-highlight-hover: #EEEEEE;
   --bg-subtle: #FDF8F3;
-  --bg-subtle-hover: #FFEEF2;
-  
+  --bg-subtle-hover: #F5F5F5;
+
   /* Border Colors */
-  --border-interactive: #F472B6;
-  --border-base: #FECDD6;
-  --border-strong: #FDB4C4;
-  
+  --border-interactive: #1A1A1A;
+  --border-base: #E5E5E5;
+  --border-strong: #CCCCCC;
+
   /* Button Colors */
-  --button-inverted: #F472B6;
-  --button-inverted-hover: #EC4899;
-  --button-inverted-pressed: #DB2777;
-  
+  --button-inverted: #1A1A1A;
+  --button-inverted-hover: #333333;
+  --button-inverted-pressed: #000000;
+
   /* Focus Ring */
-  --focus-ring: #F472B6;
-  
+  --focus-ring: #1A1A1A;
+
   /* Tag/Badge Colors */
-  --tag-neutral-bg: #FFF5F7;
-  --tag-neutral-bg-hover: #FFEEF2;
-  --tag-neutral-text: #EC4899;
-  --tag-neutral-icon: #F472B6;
-  --tag-neutral-border: #FECDD6;
+  --tag-neutral-bg: #F5F5F5;
+  --tag-neutral-bg-hover: #EEEEEE;
+  --tag-neutral-text: #1A1A1A;
+  --tag-neutral-icon: #333333;
+  --tag-neutral-border: #E5E5E5;
 }
 
 /* Override Medusa UI Button Styles */
 [data-mode="light"] {
-  /* Primary button - Party Pink */
-  --button-primary: #F472B6;
-  --button-primary-hover: #EC4899;
-  --button-primary-pressed: #DB2777;
-  
-  /* Secondary accents - Party Sky Blue */
-  --fg-secondary: #0EA5E9;
-  --bg-secondary: #E0F2FE;
-  
+  /* Primary button - Dark/Black */
+  --button-primary: #1A1A1A;
+  --button-primary-hover: #333333;
+  --button-primary-pressed: #000000;
+
+  /* Secondary accents - Grey */
+  --fg-secondary: #666666;
+  --bg-secondary: #F5F5F5;
+
   /* Interactive states */
-  --fg-interactive: #F472B6;
-  --fg-interactive-hover: #EC4899;
-  --bg-interactive: #F472B6;
-  
+  --fg-interactive: #1A1A1A;
+  --fg-interactive-hover: #333333;
+  --bg-interactive: #1A1A1A;
+
   /* Subtle backgrounds with party cream */
   --bg-subtle: #FDF8F3;
-  --bg-subtle-hover: #FFEEF2;
-  --bg-subtle-pressed: #FECDD6;
-  
+  --bg-subtle-hover: #F5F5F5;
+  --bg-subtle-pressed: #EEEEEE;
+
   /* Field backgrounds */
   --bg-field: #FFFFFF;
-  --bg-field-hover: #FFF5F7;
-  
+  --bg-field-hover: #F5F5F5;
+
   /* Borders */
-  --border-base: #FECDD6;
-  --border-strong: #FDB4C4;
-  --border-interactive: #F472B6;
-  
+  --border-base: #E5E5E5;
+  --border-strong: #CCCCCC;
+  --border-interactive: #1A1A1A;
+
   /* Focus states */
-  --focus-ring: rgba(244, 114, 182, 0.5);
-  
-  /* Shadows with pink tint */
-  --shadow-elevation-card-rest: 0 1px 2px 0 rgba(244, 114, 182, 0.05);
-  --shadow-elevation-card-hover: 0 4px 8px 0 rgba(244, 114, 182, 0.1);
+  --focus-ring: rgba(26, 26, 26, 0.5);
+
+  /* Shadows with subtle grey */
+  --shadow-elevation-card-rest: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-elevation-card-hover: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
 }
 
 /* Override specific Medusa UI component styles */
 @layer base {
+
   /* Make all buttons more rounded by default */
-  button, [role="button"], .btn {
+  button,
+  [role="button"],
+  .btn {
     border-radius: 9999px !important;
   }
-  
+
   /* Cards more rounded */
   [class*="rounded-rounded"] {
     border-radius: 16px !important;
   }
-  
-  /* Links use party pink */
+
+  /* Links use dark color */
   a:not([class]) {
-    color: #F472B6;
+    color: #1A1A1A;
   }
-  
+
   a:not([class]):hover {
-    color: #EC4899;
+    color: #333333;
   }
 }
 
 @layer utilities {
+
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -112,16 +116,18 @@
   }
 
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 
-  input:focus ~ label,
-  input:not(:placeholder-shown) ~ label {
+  input:focus~label,
+  input:not(:placeholder-shown)~label {
     @apply -translate-y-2 text-xsmall-regular;
   }
 
-  input:focus ~ label {
+  input:focus~label {
     @apply left-0;
   }
 

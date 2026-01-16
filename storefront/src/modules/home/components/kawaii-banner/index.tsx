@@ -1,4 +1,4 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Button from "@modules/common/components/button"
 
 const KawaiiBanner = () => {
   return (
@@ -17,11 +17,9 @@ const KawaiiBanner = () => {
               <p className="text-grey-60 mb-6 max-w-md">
                 Adorable and fun party supplies that kids absolutely love. Perfect for birthday parties and special celebrations.
               </p>
-              <LocalizedClientLink href="/collections/kawaii">
-                <button className="party-btn-primary">
-                  Shop Now
-                </button>
-              </LocalizedClientLink>
+              <Button href="/collections/kawaii" variant="primary">
+                Shop Now
+              </Button>
             </div>
 
             {/* Right - Image placeholder */}

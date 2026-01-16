@@ -6,15 +6,15 @@ import { getRegion } from "@lib/data/regions"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { convertToLocale } from "@lib/util/money"
 
-const ProductGrid = async ({ 
+const ProductGrid = async ({
   title = "Featured Products",
-  countryCode 
-}: { 
+  countryCode
+}: {
   title?: string
   countryCode: string
 }) => {
   const region = await getRegion(countryCode)
-  
+
   if (!region) {
     return null
   }
@@ -31,7 +31,7 @@ const ProductGrid = async ({
       <div className="content-container">
         <div className="flex items-center justify-between mb-6">
           <h2 className="party-heading-md">{title}</h2>
-          <LocalizedClientLink href="/store" className="inline-flex items-center gap-2 px-4 py-2 border border-party-pink-500 text-party-pink-500 font-medium rounded-full hover:bg-party-pink-50 transition-colors">
+          <LocalizedClientLink href="/store" className="inline-flex items-center gap-2 px-4 py-2 border border-party-dark text-party-dark font-medium rounded-full hover:bg-party-dark hover:text-white transition-colors">
             <span>View All</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -42,7 +42,7 @@ const ProductGrid = async ({
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {products.map((product) => {
             const price = product.variants?.[0]?.calculated_price
-            
+
             return (
               <LocalizedClientLink
                 key={product.id}

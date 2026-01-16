@@ -1,2 +1,6 @@
 .idea/
 .agent/
+shopify-migration/
+.vscode
+AGENT.md
+README.md

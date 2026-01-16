@@ -60,6 +60,9 @@ PartyBazar-Ecommerce/
 
 > **Note:** We use live data - no seeding to database.
 
+> [!IMPORTANT]
+> **SERVERS RUNNING MANUALLY**: The user runs backend and storefront servers manually. Do NOT run `npm run dev` or `npm run build` commands to start servers. The user will handle server management.
+
 ## Conventions
 
 ### Backend (MedusaJS 2.x)

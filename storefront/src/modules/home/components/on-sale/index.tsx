@@ -22,7 +22,7 @@ const OnSale = ({ countryCode }: { countryCode: string }) => {
             // This assumes you have a way to mark products as on sale (e.g., through tags or metadata)
           }
         })
-        
+
         // For now, we'll take the first 5 products and simulate sale pricing
         // In a real implementation, you'd filter for products that actually have sale prices
         setProducts(response.products.slice(0, 5))
@@ -43,12 +43,12 @@ const OnSale = ({ countryCode }: { countryCode: string }) => {
     // Get the first variant's price
     const variant = product.variants?.[0]
     if (!variant?.calculated_price) return { original: 0, sale: 0, discount: 0, currency: "USD" }
-    
+
     const original = variant.calculated_price.calculated_amount || 0
     // Simulate a 20-40% discount
     const discountPercent = 0.2 + Math.random() * 0.2
     const sale = original * (1 - discountPercent)
-    
+
     return {
       original,
       sale,
@@ -100,7 +100,7 @@ const OnSale = ({ countryCode }: { countryCode: string }) => {
       <div className="content-container">
         <div className="flex items-center justify-between mb-6">
           <h2 className="party-heading-md">On Sale</h2>
-          <LocalizedClientLink href="/collections/sale" className="inline-flex items-center gap-2 px-4 py-2 border border-party-pink-500 text-party-pink-500 font-medium rounded-full hover:bg-party-pink-50 transition-colors">
+          <LocalizedClientLink href="/collections/sale" className="inline-flex items-center gap-2 px-4 py-2 border border-party-dark text-party-dark font-medium rounded-full hover:bg-party-dark hover:text-white transition-colors">
             <span>View All</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -112,7 +112,7 @@ const OnSale = ({ countryCode }: { countryCode: string }) => {
           {products.map((product) => {
             const pricing = calculateSalePrice(product)
             const thumbnail = product.thumbnail || product.images?.[0]?.url
-            
+
             return (
               <LocalizedClientLink
                 key={product.id}

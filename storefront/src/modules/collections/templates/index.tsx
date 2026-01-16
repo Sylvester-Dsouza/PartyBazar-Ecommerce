@@ -6,6 +6,8 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import { HttpTypes } from "@medusajs/types"
 
+import PageHeader from "@modules/common/components/page-header"
+
 export default function CollectionTemplate({
   sortBy,
   collection,
@@ -21,27 +23,35 @@ export default function CollectionTemplate({
   const sort = sortBy || "created_at"
 
   return (
-    <div className="flex flex-col small:flex-row small:items-start py-6 content-container">
-      <RefinementList sortBy={sort} />
-      <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
-          <h1>{collection.title}</h1>
-        </div>
-        <Suspense
-          fallback={
-            <SkeletonProductGrid
-              numberOfProducts={collection.products?.length}
+    <>
+      <PageHeader
+        title={collection.title}
+        breadcrumbs={[
+          { label: "Collections", href: "/collections" },
+          { label: collection.title, href: `/collections/${collection.handle}` },
+        ]}
+        description={collection.metadata?.meta_description as string}
+      />
+      <div className="flex flex-col small:flex-row small:items-start py-6 content-container">
+        <RefinementList sortBy={sort} />
+        <div className="w-full">
+          <Suspense
+            fallback={
+              <SkeletonProductGrid
+                numberOfProducts={collection.products?.length}
+              />
+            }
+          >
+            <PaginatedProducts
+              sortBy={sort}
+              page={pageNumber}
+              collectionId={collection.id}
+              countryCode={countryCode}
             />
-          }
-        >
-          <PaginatedProducts
-            sortBy={sort}
-            page={pageNumber}
-            collectionId={collection.id}
-            countryCode={countryCode}
-          />
-        </Suspense>
+          </Suspense>
+        </div>
       </div>
-    </div>
+
+    </>
   )
 }

@@ -21,6 +21,7 @@ export default async function PaginatedProducts({
   categoryId,
   productsIds,
   countryCode,
+  gridColumns = 4,
 }: {
   sortBy?: SortOptions
   page: number
@@ -28,6 +29,7 @@ export default async function PaginatedProducts({
   categoryId?: string
   productsIds?: string[]
   countryCode: string
+  gridColumns?: 3 | 4
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -66,10 +68,15 @@ export default async function PaginatedProducts({
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
 
+  // Dynamic grid classes based on column setting
+  const gridClasses = gridColumns === 3
+    ? "grid grid-cols-1 xsmall:grid-cols-2 small:grid-cols-3 gap-4"
+    : "grid grid-cols-1 xsmall:grid-cols-2 small:grid-cols-3 medium:grid-cols-4 gap-4"
+
   return (
     <>
       <ul
-        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
+        className={gridClasses}
         data-testid="products-list"
       >
         {products.map((p) => {
@@ -90,3 +97,4 @@ export default async function PaginatedProducts({
     </>
   )
 }
+
