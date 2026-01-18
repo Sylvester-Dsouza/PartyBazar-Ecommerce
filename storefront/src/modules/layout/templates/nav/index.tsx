@@ -90,7 +90,10 @@ export default function Nav({ cart }: { cart?: HttpTypes.StoreCart | null }) {
             {/* Center Navigation - Desktop Only - Dynamic from API */}
             <div className="hidden lg:flex items-center gap-x-8 h-full">
               {menuItems.map((item) => (
-                <div key={item.id} className="relative group h-full flex items-center">
+                <div
+                  key={item.id}
+                  className={`relative h-full flex items-center ${item.children && item.children.length > 0 ? 'group' : ''}`}
+                >
                   <LocalizedClientLink
                     href={item.url}
                     className={`text-sm font-medium transition-colors flex items-center gap-1 py-2 ${isScrolled
@@ -123,20 +126,20 @@ export default function Nav({ cart }: { cart?: HttpTypes.StoreCart | null }) {
 
                   {/* Dropdown for items with children */}
                   {item.children && item.children.length > 0 && (
-                    <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                      <div className="bg-white rounded-xl shadow-lg border border-grey-10 py-2 min-w-[200px]">
+                    <div className="absolute top-full left-0 pt-0.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="bg-white shadow-xl border border-gray-100 min-w-[220px] overflow-hidden rounded-lg">
                         {item.children.map((child) => (
                           <LocalizedClientLink
                             key={child.id}
                             href={child.url}
-                            className="block px-4 py-2 text-sm text-grey-70 hover:text-party-dark hover:bg-grey-5 transition-colors"
+                            className="block px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors border-b border-gray-50 last:border-b-0"
                             target={(child.open_in_new_tab === true || String(child.open_in_new_tab) === "true") ? "_blank" : undefined}
                             rel={(child.open_in_new_tab === true || String(child.open_in_new_tab) === "true") ? "noopener noreferrer" : undefined}
                           >
-                            <span className="relative">
+                            <span className="relative font-medium">
                               {child.title}
                               {child.highlight && child.highlight_text && (
-                                <span className="absolute -top-2 -right-1 translate-x-1/2 text-[8px] font-bold uppercase tracking-tighter bg-red-500 text-white px-1.5 py-0.5 rounded-full shadow-sm border border-white z-20 select-none leading-none">
+                                <span className="ml-2 text-[10px] font-bold uppercase tracking-wide bg-red-500 text-white px-2 py-0.5 rounded-sm">
                                   {child.highlight_text}
                                 </span>
                               )}

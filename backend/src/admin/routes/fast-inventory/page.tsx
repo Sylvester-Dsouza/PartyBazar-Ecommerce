@@ -53,6 +53,7 @@ const FastInventoryPage = () => {
     const [selectedLocationId, setSelectedLocationId] = useState<string>("")
     const [isLoading, setIsLoading] = useState(true)
     const [offset, setOffset] = useState(0)
+    const [query, setQuery] = useState("")
     const limit = 20
 
     // Fetch Initial Data
@@ -67,7 +68,7 @@ const FastInventoryPage = () => {
                 if (locs.length > 0) setSelectedLocationId(locs[0].id)
 
                 // 2. Fetch Products
-                await fetchProducts(0)
+                await fetchProducts(0, "")
             } catch (e) {
                 console.error(e)
                 toast.error("Failed to load data")
@@ -78,14 +79,45 @@ const FastInventoryPage = () => {
         init()
     }, [])
 
-    const fetchProducts = async (newOffset: number) => {
+    // Debounced Search
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setOffset(0)
+            fetchProducts(0, query)
+        }, 600)
+        return () => clearTimeout(handler)
+    }, [query])
+
+    const fetchProducts = async (newOffset: number, searchQuery: string) => {
         setIsLoading(true)
         try {
-            const res = await fetch(`/admin/products?limit=${limit}&offset=${newOffset}&fields=id,title,thumbnail,handle,variants.id,variants.title,variants.sku,variants.prices.*&expand=variants,variants.prices`, { credentials: "include" })
-            const data = await res.json()
-            let prods = data.products as Product[]
-            setProducts(prods)
-            setOffset(newOffset)
+            if (searchQuery) {
+                // Fetch more products to search through (up to 100)
+                const res = await fetch(`/admin/products?limit=100&offset=0&fields=id,title,thumbnail,variants.id,variants.title,variants.sku,variants.prices.*&expand=variants,variants.prices`, { credentials: "include" })
+                const data = await res.json()
+                const allProducts = data.products as Product[]
+
+                // Filter client-side by product name OR variant SKU
+                const searchLower = searchQuery.toLowerCase()
+                const filtered = allProducts.filter(product => {
+                    // Check product title
+                    if (product.title.toLowerCase().includes(searchLower)) return true
+
+                    // Check any variant SKU
+                    return product.variants?.some(variant =>
+                        variant.sku?.toLowerCase().includes(searchLower)
+                    )
+                })
+
+                setProducts(filtered)
+                setOffset(0)
+            } else {
+                // No search - normal pagination
+                const res = await fetch(`/admin/products?limit=${limit}&offset=${newOffset}&fields=id,title,thumbnail,variants.id,variants.title,variants.sku,variants.prices.*&expand=variants,variants.prices`, { credentials: "include" })
+                const data = await res.json()
+                setProducts(data.products || [])
+                setOffset(newOffset)
+            }
         } catch (e) {
             console.error(e)
             toast.error("Failed to fetch products")
@@ -99,17 +131,25 @@ const FastInventoryPage = () => {
             <Toaster />
             <div className="p-6 border-b flex justify-between items-center">
                 <Heading>Fast Inventory</Heading>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <div className="w-64">
+                        <Input
+                            placeholder="Search by Name or SKU..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            size="small"
+                        />
+                    </div>
                     <Button
                         variant="secondary"
-                        onClick={() => fetchProducts(Math.max(0, offset - limit))}
+                        onClick={() => fetchProducts(Math.max(0, offset - limit), query)}
                         disabled={offset === 0 || isLoading}
                     >
                         Previous
                     </Button>
                     <Button
                         variant="secondary"
-                        onClick={() => fetchProducts(offset + limit)}
+                        onClick={() => fetchProducts(offset + limit, query)}
                         disabled={products.length < limit || isLoading}
                     >
                         Next
@@ -278,7 +318,13 @@ const VariantRow = ({ product, variant, locationId }: { product: Product, varian
     return (
         <Table.Row>
             <Table.Cell className="flex items-center gap-3">
-                {product.thumbnail && <Avatar src={product.thumbnail} fallback={product.title[0]} size="small" />}
+                {product.thumbnail ? (
+                    <Avatar src={product.thumbnail} fallback={product.title[0]} size="small" />
+                ) : (
+                    <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-medium">
+                        {product.title[0]}
+                    </div>
+                )}
                 <div className="flex flex-col">
                     <Text size="small" weight="plus">{product.title}</Text>
                     {variant.title !== 'Default Variant' && <Text size="xsmall" className="text-ui-fg-subtle">{variant.title}</Text>}
