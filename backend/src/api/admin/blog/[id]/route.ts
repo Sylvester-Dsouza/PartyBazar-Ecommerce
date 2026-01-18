@@ -46,7 +46,14 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     const blogService: BlogModuleService = req.scope.resolve(BLOG_MODULE)
     const { id } = req.params
 
-    const post = await blogService.updatePosts(id, validated)
+    // Convert published_at string to Date if provided
+    const updateData = {
+        id,
+        ...validated,
+        published_at: validated.published_at ? new Date(validated.published_at) : undefined
+    }
+
+    const post = await blogService.updatePosts(updateData)
 
     res.json({
         post,

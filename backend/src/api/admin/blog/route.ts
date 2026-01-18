@@ -38,7 +38,13 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     const validated = CreatePostSchema.parse(req.body)
     const blogService: BlogModuleService = req.scope.resolve(BLOG_MODULE)
 
-    const post = await blogService.createPosts(validated)
+    // Convert published_at string to Date if provided
+    const postData = {
+        ...validated,
+        published_at: validated.published_at ? new Date(validated.published_at) : undefined
+    }
+
+    const post = await blogService.createPosts(postData)
 
     res.status(201).json({
         post,
