@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const BentoGrid = () => {
@@ -13,6 +14,7 @@ const BentoGrid = () => {
       description: "Same day delivery for last-minute party needs",
       icon: "🚚",
       color: "from-party-sky-400 to-party-sky-600",
+      image: "/b1.png",
       size: "full",
       link: "/pages/delivery"
     },
@@ -22,6 +24,7 @@ const BentoGrid = () => {
       description: "Complete step-by-step guides for perfect celebrations",
       icon: "📋",
       color: "from-party-pink-400 to-party-pink-600",
+      image: "/b2.jpg",
       size: "full",
       link: "/plan-my-event"
     },
@@ -31,6 +34,7 @@ const BentoGrid = () => {
       description: "Special pricing for large events and corporate parties",
       icon: "📦",
       color: "from-purple-400 to-purple-600",
+      image: "/b3.jpg",
       size: "top",
       link: "/pages/bulk-orders"
     },
@@ -40,6 +44,7 @@ const BentoGrid = () => {
       description: "Perfect gift for party lovers and planners",
       icon: "🎁",
       color: "from-yellow-400 to-orange-500",
+      image: "/b4.jpg",
       size: "bottom",
       link: "/pages/gift-cards"
     }
@@ -57,14 +62,23 @@ const BentoGrid = () => {
           {/* First Column - Full Height */}
           <div
             className="relative col-span-1 row-span-2 lg:row-span-2 rounded-3xl overflow-hidden cursor-pointer group"
-            onMouseEnter={() => setHoveredItem("express-delivery")}
+            onMouseEnter={() => setHoveredItem(bentoItems[0].id)}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <div className={`absolute inset-0 bg-gradient-to-br ${bentoItems[0].color} transition-all duration-300 ${hoveredItem === "express-delivery" ? "scale-105" : ""}`}></div>
-            <div className="relative z-10 p-8 flex flex-col justify-between h-full text-white">
-              <div className="text-6xl mb-4 transform transition-transform duration-300 group-hover:scale-110">
-                {bentoItems[0].icon}
-              </div>
+            {/* Background Image */}
+            <div className={`absolute inset-0 transition-transform duration-500 ${hoveredItem === bentoItems[0].id ? "scale-110" : "scale-100"}`}>
+              <Image
+                src={bentoItems[0].image}
+                alt={bentoItems[0].title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+            </div>
+            {/* Dark Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            {/* Content Overlay */}
+            <div className="relative z-10 p-8 flex flex-col justify-end h-full text-white drop-shadow-md">
               <div>
                 <h3 className="text-2xl lg:text-3xl font-bold mb-2">{bentoItems[0].title}</h3>
                 <p className="text-white/90 mb-4">{bentoItems[0].description}</p>
@@ -83,14 +97,23 @@ const BentoGrid = () => {
           {/* Second Column - Full Height */}
           <div
             className="relative col-span-1 row-span-2 lg:row-span-2 rounded-3xl overflow-hidden cursor-pointer group"
-            onMouseEnter={() => setHoveredItem("party-planning")}
+            onMouseEnter={() => setHoveredItem(bentoItems[1].id)}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <div className={`absolute inset-0 bg-gradient-to-br ${bentoItems[1].color} transition-all duration-300 ${hoveredItem === "party-planning" ? "scale-105" : ""}`}></div>
-            <div className="relative z-10 p-8 flex flex-col justify-between h-full text-white">
-              <div className="text-6xl mb-4 transform transition-transform duration-300 group-hover:scale-110">
-                {bentoItems[1].icon}
-              </div>
+            {/* Background Image */}
+            <div className={`absolute inset-0 transition-transform duration-500 ${hoveredItem === bentoItems[1].id ? "scale-110" : "scale-100"}`}>
+              <Image
+                src={bentoItems[1].image}
+                alt={bentoItems[1].title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+            </div>
+            {/* Dark Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            {/* Content Overlay */}
+            <div className="relative z-10 p-8 flex flex-col justify-end h-full text-white drop-shadow-md">
               <div>
                 <h3 className="text-2xl lg:text-3xl font-bold mb-2">{bentoItems[1].title}</h3>
                 <p className="text-white/90 mb-4">{bentoItems[1].description}</p>
@@ -111,14 +134,23 @@ const BentoGrid = () => {
             {/* Top Item */}
             <div
               className="relative rounded-3xl overflow-hidden cursor-pointer group"
-              onMouseEnter={() => setHoveredItem("bulk-orders")}
+              onMouseEnter={() => setHoveredItem(bentoItems[2].id)}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${bentoItems[2].color} transition-all duration-300 ${hoveredItem === "bulk-orders" ? "scale-105" : ""}`}></div>
-              <div className="relative z-10 p-6 flex flex-col justify-between h-full text-white">
-                <div className="text-4xl mb-2 transform transition-transform duration-300 group-hover:scale-110">
-                  {bentoItems[2].icon}
-                </div>
+              {/* Background Image */}
+              <div className={`absolute inset-0 transition-transform duration-500 ${hoveredItem === bentoItems[2].id ? "scale-110" : "scale-100"}`}>
+                <Image
+                  src={bentoItems[2].image}
+                  alt={bentoItems[2].title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+              {/* Dark Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+              {/* Content Overlay */}
+              <div className="relative z-10 p-6 flex flex-col justify-end h-full text-white drop-shadow-md">
                 <div>
                   <h3 className="text-xl font-bold mb-1">{bentoItems[2].title}</h3>
                   <p className="text-white/90 text-sm mb-3">{bentoItems[2].description}</p>
@@ -137,14 +169,23 @@ const BentoGrid = () => {
             {/* Bottom Item */}
             <div
               className="relative rounded-3xl overflow-hidden cursor-pointer group"
-              onMouseEnter={() => setHoveredItem("gift-cards")}
+              onMouseEnter={() => setHoveredItem(bentoItems[3].id)}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${bentoItems[3].color} transition-all duration-300 ${hoveredItem === "gift-cards" ? "scale-105" : ""}`}></div>
-              <div className="relative z-10 p-6 flex flex-col justify-between h-full text-white">
-                <div className="text-4xl mb-2 transform transition-transform duration-300 group-hover:scale-110">
-                  {bentoItems[3].icon}
-                </div>
+              {/* Background Image */}
+              <div className={`absolute inset-0 transition-transform duration-500 ${hoveredItem === bentoItems[3].id ? "scale-110" : "scale-100"}`}>
+                <Image
+                  src={bentoItems[3].image}
+                  alt={bentoItems[3].title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+              {/* Dark Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+              {/* Content Overlay */}
+              <div className="relative z-10 p-6 flex flex-col justify-end h-full text-white drop-shadow-md">
                 <div>
                   <h3 className="text-xl font-bold mb-1">{bentoItems[3].title}</h3>
                   <p className="text-white/90 text-sm mb-3">{bentoItems[3].description}</p>

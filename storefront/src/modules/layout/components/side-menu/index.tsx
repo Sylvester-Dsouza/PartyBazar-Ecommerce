@@ -82,15 +82,17 @@ const SideMenu = ({ regions, menuItems }: SideMenuProps) => {
                             className="text-3xl leading-10 hover:text-ui-fg-disabled flex items-center gap-2"
                             onClick={close}
                             data-testid={`${item.title.toLowerCase().replace(/\s+/g, '-')}-link`}
-                            target={item.open_in_new_tab ? "_blank" : undefined}
-                            rel={item.open_in_new_tab ? "noopener noreferrer" : undefined}
+                            target={(item.open_in_new_tab === true || String(item.open_in_new_tab) === "true") ? "_blank" : undefined}
+                            rel={(item.open_in_new_tab === true || String(item.open_in_new_tab) === "true") ? "noopener noreferrer" : undefined}
                           >
-                            {item.title}
-                            {item.highlight && item.highlight_text && (
-                              <span className="text-sm bg-party-sky-500 text-white px-2 py-0.5 rounded-full">
-                                {item.highlight_text}
-                              </span>
-                            )}
+                            <span className="relative">
+                              {item.title}
+                              {item.highlight && item.highlight_text && (
+                                <span className="absolute -top-1 -right-4 translate-x-1/2 text-[10px] font-bold uppercase bg-red-500 text-white px-2 py-0.5 rounded-full shadow-sm border border-white leading-none">
+                                  {item.highlight_text}
+                                </span>
+                              )}
+                            </span>
                           </LocalizedClientLink>
                         </li>
                       ))}

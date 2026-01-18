@@ -11,16 +11,16 @@ class BlogModuleService extends MedusaService({
      */
     async getPublishedPostByHandle(handle: string) {
         const [post] = await this.listPosts(
-            {
-                handle,
-                published_at: {
-                    $lte: new Date(),
-                }
-            },
+            { handle },
             { relations: ["category"] }
         ) as any[]
 
-        return post || null
+        // Check if post exists and is published
+        if (!post || !post.published_at || new Date(post.published_at) > new Date()) {
+            return null
+        }
+
+        return post
     }
 
     /**
@@ -29,22 +29,26 @@ class BlogModuleService extends MedusaService({
     async getPublishedPosts(options: any = {}) {
         const { limit = 10, offset = 0, category_id } = options
 
-        const filters: any = {
-            published_at: {
-                $lte: new Date(),
-            }
-        }
+        // Get all posts and filter in memory for published ones
+        const filters: any = {}
 
         if (category_id) {
             filters.category_id = category_id
         }
 
-        return this.listPosts(filters, {
+        const allPosts = await this.listPosts(filters, {
             relations: ["category"],
-            skip: offset,
-            take: limit,
-            order: { published_at: "DESC" },
-        })
+            order: { created_at: "DESC" },
+        }) as any[]
+
+        // Filter for published posts (published_at exists and is in the past)
+        const now = new Date()
+        const publishedPosts = allPosts.filter((post: any) =>
+            post.published_at && new Date(post.published_at) <= now
+        )
+
+        // Apply pagination
+        return publishedPosts.slice(offset, offset + limit)
     }
 
     /**

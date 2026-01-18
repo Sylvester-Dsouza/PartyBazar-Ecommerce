@@ -46,7 +46,7 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
     const validated = UpdateMenuSchema.parse(req.body)
     const menuService: MenuModuleService = req.scope.resolve(MENU_MODULE)
 
-    const menu = await menuService.updateMenus({ id }, validated)
+    const menu = await menuService.updateMenus({ id, ...validated })
 
     res.json({
         menu,

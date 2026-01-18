@@ -106,7 +106,7 @@ const CreateBlogPostPage = () => {
                                 <TinyMCEEditor
                                     value={formData.content}
                                     onChange={(content) => setFormData({ ...formData, content })}
-                                    height={400}
+                                    height={800}
                                 />
                             </div>
                             <p className="text-xs text-ui-fg-subtle mt-1">

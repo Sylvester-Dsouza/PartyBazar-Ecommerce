@@ -1,14 +1,13 @@
 import { Metadata } from "next"
 
-import Hero from "@modules/home/components/hero"
-import CategoryPills from "@modules/home/components/category-pills"
-import ShopThemes from "@modules/home/components/shop-themes"
-import ShopCategories from "@modules/home/components/shop-categories"
-import ProductGrid from "@modules/home/components/product-grid"
-import CuratedDeals from "@modules/home/components/curated-deals"
-import OnSale from "@modules/home/components/on-sale"
-import BentoGrid from "@modules/home/components/bento-grid"
-import CollectionBanner from "@modules/home/components/collection-banner"
+import Hero from "@modules/home/components/01-hero"
+import CategoryPills from "@modules/home/components/02-category-pills"
+import ShopThemes from "@modules/home/components/03-shop-themes"
+import ShopCategories from "@modules/home/components/04-shop-categories"
+import ProductGrid from "@modules/home/components/05-featured-products"
+import CuratedDeals from "@modules/home/components/06-curated-deals"
+import BentoGrid from "@modules/home/components/07-bento-grid"
+import CollectionBanner from "@modules/home/components/08-collection-banner"
 
 export const metadata: Metadata = {
   title: "Party Bazaar - Make Your Party Unforgettable",
@@ -26,28 +25,27 @@ export default async function Home(props: {
     <>
       {/* Hero Section */}
       <Hero />
-      
+
       {/* Category Pills - Let's Get the Party Started */}
       <CategoryPills />
-      
+
       {/* Shop Party Themes */}
       <ShopThemes />
-      
+
       {/* Shop by Category */}
       <ShopCategories />
-      
+
       {/* Featured Products Grid */}
       <ProductGrid title="Featured Products" countryCode={countryCode} />
-      
+
       {/* Curated Deals & New Arrivals Banners */}
       <CuratedDeals />
-      
-      {/* On Sale Products */}
-      <OnSale countryCode={countryCode} />
-      
+
+
+
       {/* Bento Grid Features */}
       <BentoGrid />
-      
+
       {/* Ambient Blossom Collection Banner */}
       <CollectionBanner />
     </>

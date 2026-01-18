@@ -139,36 +139,34 @@ const RefinementList = ({ sortBy, categories = [], 'data-testid': dataTestId }: 
   }
 
   return (
-    <div className="w-full small:w-[280px] small:min-w-[280px] small:pr-8 mb-8 small:mb-0">
+    <div className="w-full small:w-[280px] small:min-w-[280px] small:pr-8 mb-8 small:mb-0 space-y-6">
       {/* Applied Filters Section */}
-      <div className="border border-grey-20 rounded-lg mb-6">
+      <div className="bg-white border border-grey-20 rounded-xl overflow-hidden shadow-sm">
         <button
           onClick={() => setAppliedFiltersOpen(!appliedFiltersOpen)}
-          className="flex items-center justify-between w-full p-4"
+          className="flex items-center justify-between w-full p-4 bg-party-cream/30 hover:bg-party-cream/50 transition-colors"
         >
-          <span className="font-medium text-party-dark">Applied Filters</span>
-          <ChevronDown className={`w-5 h-5 text-grey-50 transition-transform ${appliedFiltersOpen ? 'rotate-0' : '-rotate-90'}`} />
+          <span className="font-semibold text-party-dark">Applied Filters</span>
+          <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${appliedFiltersOpen ? 'rotate-0' : '-rotate-90'}`} />
         </button>
 
         {appliedFiltersOpen && (
-          <div className="px-4 pb-4">
-            <div className="space-y-2 mb-4">
+          <div className="p-4">
+            <div className="flex flex-wrap gap-2 mb-4">
               {appliedFilters.map(filter => (
-                <div key={filter.id} className="flex items-center justify-between py-1">
-                  <div className="flex items-center gap-2">
-                    {filter.color && (
-                      <span
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: filter.color }}
-                      />
-                    )}
-                    <span className="text-sm text-grey-70">{filter.label}</span>
-                  </div>
+                <div key={filter.id} className="flex items-center gap-1.5 px-3 py-1.5 bg-party-sky-50 border border-party-sky-200 rounded-full">
+                  {filter.color && (
+                    <span
+                      className="w-2.5 h-2.5 rounded-full border border-gray-100"
+                      style={{ backgroundColor: filter.color }}
+                    />
+                  )}
+                  <span className="text-xs font-medium text-party-dark">{filter.label}</span>
                   <button
                     onClick={() => removeFilter(filter.id)}
-                    className="text-grey-50 hover:text-party-dark"
+                    className="text-party-sky-300 hover:text-red-400 transition-colors ml-1"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ))}
@@ -176,32 +174,74 @@ const RefinementList = ({ sortBy, categories = [], 'data-testid': dataTestId }: 
 
             <button
               onClick={resetFilters}
-              className="w-full py-3 bg-party-dark hover:bg-grey-80 text-white font-medium rounded-full transition-colors uppercase text-sm tracking-wide"
+              className="w-full py-2.5 bg-white border border-party-pink-200 text-party-pink-500 hover:bg-party-pink-50 font-medium rounded-lg transition-colors text-sm"
             >
-              Reset Filter
+              Clear All
             </button>
           </div>
         )}
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-grey-20 mb-6" />
-
-      {/* Category Section */}
-      <div className="border border-grey-20 rounded-lg">
+      {/* Categories Section */}
+      <div className="bg-white border border-grey-20 rounded-xl overflow-hidden shadow-sm">
         <button
           onClick={() => setCategoryOpen(!categoryOpen)}
-          className="flex items-center justify-between w-full p-4"
+          className="flex items-center justify-between w-full p-4 bg-white hover:bg-gray-50 transition-colors border-b border-grey-10"
         >
-          <span className="font-medium text-party-dark">Category</span>
-          <ChevronDown className={`w-5 h-5 text-grey-50 transition-transform ${categoryOpen ? 'rotate-0' : '-rotate-90'}`} />
+          <span className="font-semibold text-party-dark">Categories</span>
+          <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${categoryOpen ? 'rotate-0' : '-rotate-90'}`} />
         </button>
 
         {categoryOpen && (
-          <div className="px-4 pb-4">
+          <div className="p-4 max-h-[300px] overflow-y-auto scrollbar-thin">
             {displayCategories.map(category => renderCategory(category))}
           </div>
         )}
+      </div>
+
+      {/* Price Range Section (UI Only) */}
+      <div className="bg-white border border-grey-20 rounded-xl overflow-hidden shadow-sm">
+        <button
+          className="flex items-center justify-between w-full p-4 bg-white hover:bg-gray-50 transition-colors border-b border-grey-10"
+        >
+          <span className="font-semibold text-party-dark">Price Range</span>
+          <ChevronDown className="w-5 h-5 text-gray-400" />
+        </button>
+        <div className="p-4 space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <label className="text-xs text-gray-500 mb-1 block">Min</label>
+              <input type="number" placeholder="0" className="w-full px-3 py-2 border border-grey-20 rounded-lg text-sm focus:ring-party-sky-200 focus:border-party-sky-300" />
+            </div>
+            <div className="pt-4 text-gray-400">-</div>
+            <div className="flex-1">
+              <label className="text-xs text-gray-500 mb-1 block">Max</label>
+              <input type="number" placeholder="1000" className="w-full px-3 py-2 border border-grey-20 rounded-lg text-sm focus:ring-party-sky-200 focus:border-party-sky-300" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Colors Section (UI Only) */}
+      <div className="bg-white border border-grey-20 rounded-xl overflow-hidden shadow-sm">
+        <button
+          className="flex items-center justify-between w-full p-4 bg-white hover:bg-gray-50 transition-colors border-b border-grey-10"
+        >
+          <span className="font-semibold text-party-dark">Colors</span>
+          <ChevronDown className="w-5 h-5 text-gray-400" />
+        </button>
+        <div className="p-4">
+          <div className="flex flex-wrap gap-3">
+            {["#EF4444", "#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#111827", "#FFFFFF"].map((color) => (
+              <button
+                key={color}
+                className="w-8 h-8 rounded-full border border-gray-200 shadow-sm hover:scale-110 transition-transform focus:ring-2 focus:ring-offset-2 focus:ring-party-sky-300"
+                style={{ backgroundColor: color }}
+                aria-label={`Color ${color}`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )

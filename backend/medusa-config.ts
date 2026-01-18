@@ -56,7 +56,52 @@ export default defineConfig({
                 a[href*="docs.medusajs.com"] {
                   display: none !important;
                 }
-              </style></head>`
+                /* Cancelled Order Row Styling */
+                tr.order-cancelled-row td {
+                    background-color: #FEF2F2 !important; /* light red */
+                }
+                tr.order-cancelled-row {
+                    border-left: 4px solid #EF4444 !important; /* red border */
+                    box-shadow: inset 4px 0 0 0 #EF4444;
+                }
+
+                /* Delivered/Shipped Order Row Styling */
+                tr.order-delivered-row td {
+                    background-color: #F0FDF4 !important; /* light green */
+                }
+                tr.order-delivered-row {
+                    border-left: 4px solid #22C55E !important; /* green border */
+                    box-shadow: inset 4px 0 0 0 #22C55E;
+                }
+              </style>
+              <script>
+                // Observer to highlight Cancelled and Delivered orders
+                const observer = new MutationObserver(() => {
+                    const cells = document.querySelectorAll('td');
+                    cells.forEach(td => {
+                        const text = td.textContent.trim();
+                        
+                        // Cancelled -> Red
+                        if (text === 'Canceled') {
+                            const tr = td.closest('tr');
+                            if (tr) tr.classList.add('order-cancelled-row');
+                        }
+
+                        // Delivered/Shipped/Completed -> Green
+                        if (['Delivered', 'Shipped', 'Completed'].includes(text)) {
+                            const tr = td.closest('tr');
+                            if (tr) tr.classList.add('order-delivered-row');
+                        }
+                    });
+                });
+                
+                // Start observing after a short delay to ensure app mount
+                setTimeout(() => {
+                    const root = document.getElementById('root') || document.body;
+                    observer.observe(root, { childList: true, subtree: true });
+                }, 1000);
+              </script>
+              </head>`
             )
           }
         }
@@ -150,6 +195,10 @@ export default defineConfig({
     // Blog Module
     {
       resolve: './src/modules/blog',
+    },
+    // Vendor Module
+    {
+      resolve: './src/modules/vendor',
     },
   ],
   plugins: [

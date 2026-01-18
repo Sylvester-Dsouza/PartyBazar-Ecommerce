@@ -22,7 +22,12 @@ export default function BlogListTemplate({ countryCode }: { countryCode: string 
         const fetchPosts = async () => {
             try {
                 const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/blog/posts`
+                    `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/blog`,
+                    {
+                        headers: {
+                            "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "",
+                        },
+                    }
                 )
                 const data = await response.json()
                 setPosts(data.posts || [])

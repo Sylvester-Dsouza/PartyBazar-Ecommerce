@@ -18,6 +18,8 @@ const UpdateMenuItemSchema = z.object({
     is_active: z.boolean().optional(),
 })
 
+import { generateUrl } from "../../../utils"
+
 /**
  * GET /admin/menu/:id/items/:itemId
  * Get a single menu item
@@ -46,7 +48,24 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
     const validated = UpdateMenuItemSchema.parse(req.body)
     const menuService: MenuModuleService = req.scope.resolve(MENU_MODULE)
 
-    const item = await menuService.updateMenuItems({ id: itemId }, validated)
+    // If link info is changed, we might need to regenerate the URL
+    let url = validated.url
+    if (validated.link_type || validated.link_id !== undefined) {
+        // Fetch current item to get existing values for regeneration if not provided in body
+        const currentItem = await menuService.retrieveMenuItem(itemId)
+        url = await generateUrl(
+            validated.link_type || currentItem.link_type,
+            validated.link_id !== undefined ? validated.link_id : currentItem.link_id,
+            validated.url || currentItem.url,
+            req.scope
+        )
+    }
+
+    const item = await menuService.updateMenuItems({
+        id: itemId,
+        ...validated,
+        ...(url ? { url } : {})
+    })
 
     res.json({
         item,

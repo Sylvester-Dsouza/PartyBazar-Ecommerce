@@ -5,13 +5,13 @@ import { usePathname } from "next/navigation"
 
 import { listRegions } from "@lib/data/regions"
 import { getMenu, MenuItem } from "@lib/data/menu"
-import { StoreRegion } from "@medusajs/types"
+import { HttpTypes, StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
 import SearchButton from "@modules/layout/components/search-button"
 
-export default function Nav() {
+export default function Nav({ cart }: { cart?: HttpTypes.StoreCart | null }) {
   const pathname = usePathname()
   const [regions, setRegions] = useState<StoreRegion[]>([])
   const [menuItems, setMenuItems] = useState<MenuItem[]>([])
@@ -97,10 +97,17 @@ export default function Nav() {
                       ? 'text-grey-70 hover:text-party-dark'
                       : 'text-party-dark hover:text-party-darker'
                       }`}
-                    target={item.open_in_new_tab ? "_blank" : undefined}
-                    rel={item.open_in_new_tab ? "noopener noreferrer" : undefined}
+                    target={(item.open_in_new_tab === true || String(item.open_in_new_tab) === "true") ? "_blank" : undefined}
+                    rel={(item.open_in_new_tab === true || String(item.open_in_new_tab) === "true") ? "noopener noreferrer" : undefined}
                   >
-                    {item.title}
+                    <span className="relative">
+                      {item.title}
+                      {item.highlight && item.highlight_text && (
+                        <span className="absolute -top-2.5 -right-2 translate-x-1/2 text-[9px] font-bold uppercase tracking-tighter bg-red-500 text-white px-1.5 py-0.5 rounded-full whitespace-nowrap shadow-sm border border-white z-20 select-none leading-none">
+                          {item.highlight_text}
+                        </span>
+                      )}
+                    </span>
                     {item.children && item.children.length > 0 && (
                       <svg
                         width="12"
@@ -123,10 +130,17 @@ export default function Nav() {
                             key={child.id}
                             href={child.url}
                             className="block px-4 py-2 text-sm text-grey-70 hover:text-party-dark hover:bg-grey-5 transition-colors"
-                            target={child.open_in_new_tab ? "_blank" : undefined}
-                            rel={child.open_in_new_tab ? "noopener noreferrer" : undefined}
+                            target={(child.open_in_new_tab === true || String(child.open_in_new_tab) === "true") ? "_blank" : undefined}
+                            rel={(child.open_in_new_tab === true || String(child.open_in_new_tab) === "true") ? "noopener noreferrer" : undefined}
                           >
-                            {child.title}
+                            <span className="relative">
+                              {child.title}
+                              {child.highlight && child.highlight_text && (
+                                <span className="absolute -top-2 -right-1 translate-x-1/2 text-[8px] font-bold uppercase tracking-tighter bg-red-500 text-white px-1.5 py-0.5 rounded-full shadow-sm border border-white z-20 select-none leading-none">
+                                  {child.highlight_text}
+                                </span>
+                              )}
+                            </span>
                           </LocalizedClientLink>
                         ))}
                       </div>
@@ -170,7 +184,7 @@ export default function Nav() {
                   </LocalizedClientLink>
                 }
               >
-                <CartButton />
+                <CartButton cart={cart} />
               </Suspense>
 
               {/* Mobile Menu - Right Side */}

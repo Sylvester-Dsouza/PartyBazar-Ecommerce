@@ -122,6 +122,16 @@
     /* Firefox */
   }
 
+  /* Scrollbar hide utility for image gallery */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   input:focus~label,
   input:not(:placeholder-shown)~label {
     @apply -translate-y-2 text-xsmall-regular;

@@ -18,6 +18,9 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
             `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/blog/${handle}`,
             {
                 next: { revalidate: 60 },
+                headers: {
+                    "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "",
+                },
             }
         )
 
@@ -50,6 +53,9 @@ export default async function BlogPostPage(props: Params) {
             `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/blog/${handle}`,
             {
                 next: { revalidate: 60 },
+                headers: {
+                    "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "",
+                },
             }
         )
 

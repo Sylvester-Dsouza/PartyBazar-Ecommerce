@@ -187,7 +187,7 @@ const EditBlogPostPage = () => {
                             <TinyMCEEditor
                                 value={formData.content}
                                 onChange={(content) => setFormData({ ...formData, content })}
-                                height={400}
+                                height={600}
                             />
                         </div>
                     </div>
