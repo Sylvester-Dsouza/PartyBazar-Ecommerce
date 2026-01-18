@@ -41,6 +41,27 @@ export default defineConfig({
   admin: {
     backendUrl: BACKEND_URL,
     disable: SHOULD_DISABLE_ADMIN,
+    vite: () => ({
+      plugins: [
+        {
+          name: 'hide-admin-links',
+          transformIndexHtml(html) {
+            return html.replace(
+              '</head>',
+              `<style>
+                /* Hide Changelog and Documentation links from profile menu */
+                [data-testid="user-menu-changelog"],
+                [data-testid="user-menu-documentation"],
+                a[href*="changelog"],
+                a[href*="docs.medusajs.com"] {
+                  display: none !important;
+                }
+              </style></head>`
+            )
+          }
+        }
+      ]
+    })
   },
   modules: [
     {
@@ -125,6 +146,10 @@ export default defineConfig({
     // Menu Module
     {
       resolve: './src/modules/menu',
+    },
+    // Blog Module
+    {
+      resolve: './src/modules/blog',
     },
   ],
   plugins: [

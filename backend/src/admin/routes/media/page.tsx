@@ -17,6 +17,8 @@ const MediaPage = () => {
     const [uploading, setUploading] = useState(false)
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('list') // Default to list view
     const [selectedFile, setSelectedFile] = useState<any | null>(null) // For Lightbox
+    const [currentPage, setCurrentPage] = useState(0)
+    const ITEMS_PER_PAGE = 9
 
     const loadFiles = async () => {
         try {
@@ -85,17 +87,23 @@ const MediaPage = () => {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
+    // Pagination calculations
+    const pageCount = Math.ceil(files.length / ITEMS_PER_PAGE)
+    const canNextPage = currentPage < pageCount - 1
+    const canPreviousPage = currentPage > 0
+    const paginatedFiles = files.slice(
+        currentPage * ITEMS_PER_PAGE,
+        (currentPage + 1) * ITEMS_PER_PAGE
+    )
+
     return (
-        <Container className="p-0 flex flex-col min-h-screen bg-ui-bg-subtle overflow-hidden">
+        <Container className="p-0 flex flex-col min-h-screen overflow-hidden">
             <Toaster />
 
             {/* Header */}
-            <div className="p-8 border-b bg-white flex items-center justify-between">
-                <div>
-                    <Heading level="h1">Media Library</Heading>
-                    <Text className="text-ui-fg-subtle">Manage files in Supabase Storage</Text>
-                </div>
-                <div className="flex items-center gap-x-2">
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+                <Heading level="h1">Media Library</Heading>
+                <div className="flex items-center gap-2">
                     <div className="flex items-center border rounded-md overflow-hidden bg-ui-bg-base">
                         <IconButton
                             variant="transparent"
@@ -130,8 +138,24 @@ const MediaPage = () => {
                 </div>
             </div>
 
+            {/* Filter Bar */}
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+                <div className="flex items-center gap-2">
+                    <Text className="text-ui-fg-subtle">Add filter</Text>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            className="h-8 w-64 rounded-md border border-ui-border-base bg-ui-bg-field px-3 text-sm placeholder:text-ui-fg-muted focus:border-ui-border-interactive focus:outline-none"
+                        />
+                    </div>
+                </div>
+            </div>
+
             {/* Content */}
-            <div className="p-8 flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto">
                 {loading ? (
                     <div className="flex items-center justify-center h-64">
                         <Text>Loading...</Text>
@@ -139,8 +163,8 @@ const MediaPage = () => {
                 ) : (
                     <>
                         {viewMode === 'grid' ? (
-                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                                {files.map((file) => (
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 px-6 py-4">
+                                {paginatedFiles.map((file) => (
                                     <div key={file.key} className="group relative border rounded-lg bg-white overflow-hidden hover:shadow-md transition-shadow">
                                         <div
                                             className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden cursor-pointer"
@@ -190,68 +214,66 @@ const MediaPage = () => {
                                 ))}
                             </div>
                         ) : (
-                            <div className="border rounded-lg bg-white overflow-hidden">
-                                <Table>
-                                    <Table.Header>
-                                        <Table.Row>
-                                            <Table.HeaderCell>File</Table.HeaderCell>
-                                            <Table.HeaderCell>Key</Table.HeaderCell>
-                                            <Table.HeaderCell>Usage</Table.HeaderCell>
-                                            <Table.HeaderCell>Size</Table.HeaderCell>
-                                            <Table.HeaderCell>Created</Table.HeaderCell>
-                                            <Table.HeaderCell>Actions</Table.HeaderCell>
-                                        </Table.Row>
-                                    </Table.Header>
-                                    <Table.Body>
-                                        {files.map((file) => (
-                                            <Table.Row key={file.key} className="hover:bg-ui-bg-subtle-hover">
-                                                <Table.Cell>
-                                                    <div
-                                                        className="w-10 h-10 bg-gray-100 rounded overflow-hidden flex items-center justify-center border cursor-pointer hover:opacity-80 transition-opacity"
-                                                        onClick={() => setSelectedFile(file)}
+                            <Table>
+                                <Table.Header>
+                                    <Table.Row>
+                                        <Table.HeaderCell>File</Table.HeaderCell>
+                                        <Table.HeaderCell>Key</Table.HeaderCell>
+                                        <Table.HeaderCell>Usage</Table.HeaderCell>
+                                        <Table.HeaderCell>Size</Table.HeaderCell>
+                                        <Table.HeaderCell>Created</Table.HeaderCell>
+                                        <Table.HeaderCell>Actions</Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Header>
+                                <Table.Body>
+                                    {paginatedFiles.map((file) => (
+                                        <Table.Row key={file.key} className="cursor-pointer">
+                                            <Table.Cell>
+                                                <div
+                                                    className="w-10 h-10 bg-gray-100 rounded overflow-hidden flex items-center justify-center border cursor-pointer hover:opacity-80 transition-opacity"
+                                                    onClick={() => setSelectedFile(file)}
+                                                >
+                                                    {file.key.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                                        <img src={file.url} className="w-full h-full object-cover" />
+                                                    ) : <span>📄</span>}
+                                                </div>
+                                            </Table.Cell>
+                                            <Table.Cell className="max-w-[200px] truncate" title={file.key}>
+                                                {file.key}
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                {file.usage && file.usage.length > 0 ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {file.usage.map((u: any, idx: number) => (
+                                                            <Link to={u.link} key={idx}>
+                                                                <Badge size="small" color="blue" className="hover:bg-blue-100 cursor-pointer transition-colors max-w-[150px] truncate">
+                                                                    {u.title}
+                                                                </Badge>
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <Text className="text-ui-fg-muted italic text-xs">Unused</Text>
+                                                )}
+                                            </Table.Cell>
+                                            <Table.Cell>{formatSize(file.size)}</Table.Cell>
+                                            <Table.Cell>{new Date(file.last_modified).toLocaleDateString()}</Table.Cell>
+                                            <Table.Cell>
+                                                <div className="flex gap-2">
+                                                    <Copy content={file.url} />
+                                                    <IconButton
+                                                        variant="transparent"
+                                                        className="text-ui-fg-error hover:text-red-600"
+                                                        onClick={() => handleDelete(file.key)}
                                                     >
-                                                        {file.key.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
-                                                            <img src={file.url} className="w-full h-full object-cover" />
-                                                        ) : <span>📄</span>}
-                                                    </div>
-                                                </Table.Cell>
-                                                <Table.Cell className="max-w-[200px] truncate" title={file.key}>
-                                                    {file.key}
-                                                </Table.Cell>
-                                                <Table.Cell>
-                                                    {file.usage && file.usage.length > 0 ? (
-                                                        <div className="flex flex-wrap gap-1">
-                                                            {file.usage.map((u: any, idx: number) => (
-                                                                <Link to={u.link} key={idx}>
-                                                                    <Badge size="small" color="blue" className="hover:bg-blue-100 cursor-pointer transition-colors max-w-[150px] truncate">
-                                                                        {u.title}
-                                                                    </Badge>
-                                                                </Link>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <Text className="text-ui-fg-muted italic text-xs">Unused</Text>
-                                                    )}
-                                                </Table.Cell>
-                                                <Table.Cell>{formatSize(file.size)}</Table.Cell>
-                                                <Table.Cell>{new Date(file.last_modified).toLocaleDateString()}</Table.Cell>
-                                                <Table.Cell>
-                                                    <div className="flex gap-2">
-                                                        <Copy content={file.url} />
-                                                        <IconButton
-                                                            variant="transparent"
-                                                            className="text-ui-fg-error hover:text-red-600"
-                                                            onClick={() => handleDelete(file.key)}
-                                                        >
-                                                            <Trash />
-                                                        </IconButton>
-                                                    </div>
-                                                </Table.Cell>
-                                            </Table.Row>
-                                        ))}
-                                    </Table.Body>
-                                </Table>
-                            </div>
+                                                        <Trash />
+                                                    </IconButton>
+                                                </div>
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    ))}
+                                </Table.Body>
+                            </Table>
                         )}
 
                         {files.length === 0 && (
@@ -262,6 +284,38 @@ const MediaPage = () => {
                     </>
                 )}
             </div>
+
+            {/* Pagination */}
+            {!loading && files.length > 0 && (
+                <div className="flex items-center justify-between px-6 py-4 border-t">
+                    <Text className="text-ui-fg-subtle text-sm">
+                        {currentPage * ITEMS_PER_PAGE + 1} — {Math.min((currentPage + 1) * ITEMS_PER_PAGE, files.length)} of {files.length} results
+                    </Text>
+                    <div className="flex items-center gap-2">
+                        <Text className="text-ui-fg-subtle text-sm">
+                            {currentPage + 1} of {pageCount} pages
+                        </Text>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="transparent"
+                                size="small"
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={!canPreviousPage}
+                            >
+                                Prev
+                            </Button>
+                            <Button
+                                variant="transparent"
+                                size="small"
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={!canNextPage}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Lightbox / Info Modal */}
             {selectedFile && (

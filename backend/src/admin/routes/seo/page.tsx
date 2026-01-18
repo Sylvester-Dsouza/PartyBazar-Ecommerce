@@ -38,6 +38,8 @@ const SEOPage = () => {
     const [activeTab, setActiveTab] = useState("products")
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
+    const [currentPage, setCurrentPage] = useState(0)
+    const ITEMS_PER_PAGE = 9
 
     // Data Lists
     const [products, setProducts] = useState<Product[]>([])
@@ -76,6 +78,7 @@ const SEOPage = () => {
 
     useEffect(() => {
         loadData()
+        setCurrentPage(0) // Reset to first page when tab changes
     }, [activeTab])
 
     const handleEdit = (item: any, type: "product" | "category" | "collection") => {
@@ -206,6 +209,22 @@ const SEOPage = () => {
         return 'good'
     }
 
+    // Get current data based on active tab
+    const getCurrentData = () => {
+        if (activeTab === 'products') return filterList(products)
+        if (activeTab === 'categories') return filterList(categories)
+        return filterList(collections)
+    }
+
+    const currentData = getCurrentData()
+    const pageCount = Math.ceil(currentData.length / ITEMS_PER_PAGE)
+    const canNextPage = currentPage < pageCount - 1
+    const canPreviousPage = currentPage > 0
+    const paginatedData = currentData.slice(
+        currentPage * ITEMS_PER_PAGE,
+        (currentPage + 1) * ITEMS_PER_PAGE
+    )
+
     const renderTable = (data: any[], type: "product" | "category" | "collection") => (
         <Table>
             <Table.Header>
@@ -221,9 +240,11 @@ const SEOPage = () => {
             </Table.Header>
             <Table.Body>
                 {loading ? (
-                    <Table.Row><Table.Cell colSpan={5} className="text-center py-8">Loading...</Table.Cell></Table.Row>
+                    <Table.Row>
+                        <Table.Cell className="text-center py-8">Loading...</Table.Cell>
+                    </Table.Row>
                 ) : (
-                    filterList(data).map(item => (
+                    paginatedData.map(item => (
                         <Table.Row key={item.id}>
                             <Table.Cell>
                                 <div className="flex items-center gap-3">
@@ -280,53 +301,78 @@ const SEOPage = () => {
     )
 
     return (
-        <Container className="p-0 flex flex-col min-h-screen bg-ui-bg-subtle">
-            <div className="p-8 border-b bg-white">
+        <Container className="p-0 flex flex-col min-h-screen">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b">
                 <Heading level="h1">SEO Management</Heading>
-                <Text className="text-ui-fg-subtle">Optimize your store's search engine visibility</Text>
             </div>
 
-            <div className="p-8 flex-1">
+            {/* Tabs and Content */}
+            <div className="flex-1">
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
-                    <Tabs.List className="mb-4">
-                        <Tabs.Trigger value="products">Products</Tabs.Trigger>
-                        <Tabs.Trigger value="categories">Categories</Tabs.Trigger>
-                        <Tabs.Trigger value="collections">Collections</Tabs.Trigger>
-                    </Tabs.List>
+                    {/* Tabs and Search in same line */}
+                    <div className="flex items-center justify-between px-6 py-4 border-b">
+                        <Tabs.List>
+                            <Tabs.Trigger value="products">Products</Tabs.Trigger>
+                            <Tabs.Trigger value="categories">Categories</Tabs.Trigger>
+                            <Tabs.Trigger value="collections">Collections</Tabs.Trigger>
+                        </Tabs.List>
 
-                    {/* Common Search Bar */}
-                    <div className="flex justify-between mb-4">
-                        <div className="relative w-64">
-                            <span className="absolute left-2.5 top-2.5 text-ui-fg-muted">
-                                <MagnifyingGlass />
-                            </span>
-                            <Input
+                        <div className="relative">
+                            <input
+                                type="text"
                                 placeholder={`Search ${activeTab}...`}
-                                className="pl-9"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
+                                className="h-8 w-64 rounded-md border border-ui-border-base bg-ui-bg-field px-3 text-sm placeholder:text-ui-fg-muted focus:border-ui-border-interactive focus:outline-none"
                             />
                         </div>
                     </div>
 
                     <Tabs.Content value="products">
-                        <div className="bg-white rounded-lg border overflow-hidden">
-                            {renderTable(products, 'product')}
-                        </div>
+                        {renderTable(products, 'product')}
                     </Tabs.Content>
 
                     <Tabs.Content value="categories">
-                        <div className="bg-white rounded-lg border overflow-hidden">
-                            {renderTable(categories, 'category')}
-                        </div>
+                        {renderTable(categories, 'category')}
                     </Tabs.Content>
 
                     <Tabs.Content value="collections">
-                        <div className="bg-white rounded-lg border overflow-hidden">
-                            {renderTable(collections, 'collection')}
-                        </div>
+                        {renderTable(collections, 'collection')}
                     </Tabs.Content>
                 </Tabs>
+
+                {/* Pagination */}
+                {!loading && currentData.length > 0 && (
+                    <div className="flex items-center justify-between px-6 py-4 border-t">
+                        <Text className="text-ui-fg-subtle text-sm">
+                            {currentPage * ITEMS_PER_PAGE + 1} — {Math.min((currentPage + 1) * ITEMS_PER_PAGE, currentData.length)} of {currentData.length} results
+                        </Text>
+                        <div className="flex items-center gap-2">
+                            <Text className="text-ui-fg-subtle text-sm">
+                                {currentPage + 1} of {pageCount} pages
+                            </Text>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="transparent"
+                                    size="small"
+                                    onClick={() => setCurrentPage(currentPage - 1)}
+                                    disabled={!canPreviousPage}
+                                >
+                                    Prev
+                                </Button>
+                                <Button
+                                    variant="transparent"
+                                    size="small"
+                                    onClick={() => setCurrentPage(currentPage + 1)}
+                                    disabled={!canNextPage}
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Unified Editor Drawer */}
@@ -335,7 +381,7 @@ const SEOPage = () => {
                     <Drawer.Header>
                         <Drawer.Title>Edit SEO: {selectedItem?.title || selectedItem?.name}</Drawer.Title>
                     </Drawer.Header>
-                    <Drawer.Body className="p-6 space-y-8">
+                    <Drawer.Body className="p-6 space-y-8 overflow-y-auto max-h-[calc(100vh-200px)]">
                         {/* Section 1: Meta Tags */}
                         <div className="space-y-4">
                             <Heading level="h2">Meta Tags</Heading>

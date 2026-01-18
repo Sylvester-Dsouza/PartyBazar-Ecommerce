@@ -3,6 +3,9 @@ import { ChatBubbleLeftRight } from "@medusajs/icons"
 import { Container, Heading, Button, Table, Badge, Text, Prompt } from "@medusajs/ui"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+
+const ITEMS_PER_PAGE = 9
+
 type Menu = {
     id: string
     title: string
@@ -18,6 +21,7 @@ const MenuListPage = () => {
     const [showCreateModal, setShowCreateModal] = useState(false)
     const [newMenu, setNewMenu] = useState({ title: "", handle: "" })
     const [creating, setCreating] = useState(false)
+    const [currentPage, setCurrentPage] = useState(0)
 
     const fetchMenus = async () => {
         try {
@@ -74,20 +78,51 @@ const MenuListPage = () => {
         }
     }
 
+    // Pagination calculations
+    const pageCount = Math.ceil(menus.length / ITEMS_PER_PAGE)
+    const canNextPage = currentPage < pageCount - 1
+    const canPreviousPage = currentPage > 0
+    const paginatedMenus = menus.slice(
+        currentPage * ITEMS_PER_PAGE,
+        (currentPage + 1) * ITEMS_PER_PAGE
+    )
+
     return (
         <Container className="divide-y p-0">
+            {/* Header */}
             <div className="flex items-center justify-between px-6 py-4">
                 <Heading level="h1">Navigation Menus</Heading>
-                <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-                    Create Menu
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+                        Create
+                    </Button>
+                </div>
             </div>
 
-            <div className="px-6 py-4">
+            {/* Filter Bar */}
+            <div className="flex items-center justify-between px-6 py-4">
+                <div className="flex items-center gap-2">
+                    <Text className="text-ui-fg-subtle">Add filter</Text>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            className="h-8 w-64 rounded-md border border-ui-border-base bg-ui-bg-field px-3 text-sm placeholder:text-ui-fg-muted focus:border-ui-border-interactive focus:outline-none"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Table */}
+            <div>
                 {loading ? (
-                    <Text className="text-ui-fg-subtle">Loading...</Text>
+                    <div className="px-6 py-12 text-center">
+                        <Text className="text-ui-fg-subtle">Loading...</Text>
+                    </div>
                 ) : menus.length === 0 ? (
-                    <div className="text-center py-8">
+                    <div className="px-6 py-12 text-center">
                         <Text className="text-ui-fg-subtle">No menus created yet.</Text>
                         <Text className="text-ui-fg-subtle text-sm mt-2">
                             Create a menu to manage your storefront navigation.
@@ -101,14 +136,14 @@ const MenuListPage = () => {
                                 <Table.HeaderCell>Handle</Table.HeaderCell>
                                 <Table.HeaderCell>Items</Table.HeaderCell>
                                 <Table.HeaderCell>Status</Table.HeaderCell>
-                                <Table.HeaderCell className="text-right">Actions</Table.HeaderCell>
+                                <Table.HeaderCell></Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {menus.map((menu) => (
+                            {paginatedMenus.map((menu) => (
                                 <Table.Row
                                     key={menu.id}
-                                    className="cursor-pointer hover:bg-ui-bg-subtle"
+                                    className="cursor-pointer"
                                     onClick={() => navigate(menu.id)}
                                 >
                                     <Table.Cell>
@@ -127,8 +162,8 @@ const MenuListPage = () => {
                                             {menu.is_active ? "Active" : "Inactive"}
                                         </Badge>
                                     </Table.Cell>
-                                    <Table.Cell className="text-right">
-                                        <div onClick={(e) => e.stopPropagation()}>
+                                    <Table.Cell>
+                                        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
                                             <Prompt>
                                                 <Prompt.Trigger asChild>
                                                     <Button
@@ -159,6 +194,38 @@ const MenuListPage = () => {
                     </Table>
                 )}
             </div>
+
+            {/* Pagination */}
+            {!loading && menus.length > 0 && (
+                <div className="flex items-center justify-between px-6 py-4 border-t">
+                    <Text className="text-ui-fg-subtle text-sm">
+                        {currentPage * ITEMS_PER_PAGE + 1} — {Math.min((currentPage + 1) * ITEMS_PER_PAGE, menus.length)} of {menus.length} results
+                    </Text>
+                    <div className="flex items-center gap-2">
+                        <Text className="text-ui-fg-subtle text-sm">
+                            {currentPage + 1} of {pageCount} pages
+                        </Text>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="transparent"
+                                size="small"
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={!canPreviousPage}
+                            >
+                                Prev
+                            </Button>
+                            <Button
+                                variant="transparent"
+                                size="small"
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={!canNextPage}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Create Menu Modal */}
             {showCreateModal && (

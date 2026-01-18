@@ -1,0 +1,7 @@
+/* Hide Changelog and Documentation links from admin profile menu */
+[data-testid="user-menu-changelog"],
+[data-testid="user-menu-documentation"],
+a[href*="changelog"],
+a[href*="docs.medusajs.com"] {
+  display: none !important;
+}
