@@ -116,6 +116,7 @@ const VendorListPage = () => {
 export const config = defineRouteConfig({
     label: "Vendors",
     icon: BuildingStorefront,
+    nested: "/products",
 })
 
 export default VendorListPage

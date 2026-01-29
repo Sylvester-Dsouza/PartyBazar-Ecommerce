@@ -1,7 +1,7 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { Container, Heading, Button, Toaster, toast, Text, IconButton, Copy, Table, Badge, Tooltip } from "@medusajs/ui"
+import { Container, Heading, Button, Toaster, toast, Text, IconButton, Copy, Table, Badge, Tooltip, Checkbox } from "@medusajs/ui"
 import { useState, useEffect } from "react"
-import { Photo, ListBullet, SquaresPlus, Trash, XMark } from "@medusajs/icons"
+import { Photo, ListBullet, SquaresPlus, Trash, XMark, CheckCircleSolid } from "@medusajs/icons"
 import { Link } from "react-router-dom"
 
 // Utility to fetch
@@ -17,8 +17,9 @@ const MediaPage = () => {
     const [uploading, setUploading] = useState(false)
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('list') // Default to list view
     const [selectedFile, setSelectedFile] = useState<any | null>(null) // For Lightbox
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([])
     const [currentPage, setCurrentPage] = useState(0)
-    const ITEMS_PER_PAGE = 9
+    const ITEMS_PER_PAGE = 12 // Increased for better grid view
 
     const loadFiles = async () => {
         try {
@@ -36,20 +37,47 @@ const MediaPage = () => {
         loadFiles()
     }, [])
 
-    const handleDelete = async (key: string) => {
-        if (!confirm("Are you sure you want to delete this file?")) return
+    const handleDelete = async (keyOrKeys: string | string[]) => {
+        const isBulk = Array.isArray(keyOrKeys)
+        const keys = isBulk ? keyOrKeys : [keyOrKeys]
+
+        if (!confirm(`Are you sure you want to delete ${keys.length} file(s)?`)) return
 
         try {
             await fetcher("/admin/media", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ key })
+                body: JSON.stringify(isBulk ? { keys } : { key: keys[0] })
             })
-            toast.success("File deleted")
-            if (selectedFile?.key === key) setSelectedFile(null) // Close lightbox if deleted
+            toast.success(`${keys.length} file(s) deleted`)
+
+            // Cleanup
+            if (isBulk) {
+                setSelectedKeys([])
+            } else if (selectedFile?.key === keys[0]) {
+                setSelectedFile(null)
+            }
+
             loadFiles()
         } catch (e) {
-            toast.error("Failed to delete file")
+            toast.error("Failed to delete file(s)")
+        }
+    }
+
+    const toggleSelect = (key: string) => {
+        setSelectedKeys(prev =>
+            prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
+        )
+    }
+
+    const toggleSelectAll = () => {
+        const currentPagineKeys = paginatedFiles.map(f => f.key)
+        const allSelected = currentPagineKeys.every(k => selectedKeys.includes(k))
+
+        if (allSelected) {
+            setSelectedKeys(prev => prev.filter(k => !currentPagineKeys.includes(k)))
+        } else {
+            setSelectedKeys(prev => Array.from(new Set([...prev, ...currentPagineKeys])))
         }
     }
 
@@ -165,7 +193,25 @@ const MediaPage = () => {
                         {viewMode === 'grid' ? (
                             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 px-6 py-4">
                                 {paginatedFiles.map((file) => (
-                                    <div key={file.key} className="group relative border rounded-lg bg-white overflow-hidden hover:shadow-md transition-shadow">
+                                    <div
+                                        key={file.key}
+                                        className={`group relative border rounded-lg bg-white overflow-hidden hover:shadow-md transition-all ${selectedKeys.includes(file.key) ? 'ring-2 ring-ui-border-interactive border-ui-border-interactive' : ''
+                                            }`}
+                                    >
+                                        <div className="absolute top-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Checkbox
+                                                checked={selectedKeys.includes(file.key)}
+                                                onCheckedChange={() => toggleSelect(file.key)}
+                                            />
+                                        </div>
+                                        {selectedKeys.includes(file.key) && (
+                                            <div className="absolute top-2 left-2 z-10">
+                                                <Checkbox
+                                                    checked={true}
+                                                    onCheckedChange={() => toggleSelect(file.key)}
+                                                />
+                                            </div>
+                                        )}
                                         <div
                                             className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden cursor-pointer"
                                             onClick={() => setSelectedFile(file)}
@@ -217,6 +263,12 @@ const MediaPage = () => {
                             <Table>
                                 <Table.Header>
                                     <Table.Row>
+                                        <Table.HeaderCell className="w-[32px]">
+                                            <Checkbox
+                                                checked={paginatedFiles.length > 0 && paginatedFiles.every(f => selectedKeys.includes(f.key))}
+                                                onCheckedChange={toggleSelectAll}
+                                            />
+                                        </Table.HeaderCell>
                                         <Table.HeaderCell>File</Table.HeaderCell>
                                         <Table.HeaderCell>Key</Table.HeaderCell>
                                         <Table.HeaderCell>Usage</Table.HeaderCell>
@@ -227,7 +279,17 @@ const MediaPage = () => {
                                 </Table.Header>
                                 <Table.Body>
                                     {paginatedFiles.map((file) => (
-                                        <Table.Row key={file.key} className="cursor-pointer">
+                                        <Table.Row
+                                            key={file.key}
+                                            className={`cursor-pointer ${selectedKeys.includes(file.key) ? 'bg-ui-bg-subtle' : ''}`}
+                                            onClick={() => toggleSelect(file.key)}
+                                        >
+                                            <Table.Cell onClick={(e) => e.stopPropagation()}>
+                                                <Checkbox
+                                                    checked={selectedKeys.includes(file.key)}
+                                                    onCheckedChange={() => toggleSelect(file.key)}
+                                                />
+                                            </Table.Cell>
                                             <Table.Cell>
                                                 <div
                                                     className="w-10 h-10 bg-gray-100 rounded overflow-hidden flex items-center justify-center border cursor-pointer hover:opacity-80 transition-opacity"
@@ -284,6 +346,40 @@ const MediaPage = () => {
                     </>
                 )}
             </div>
+
+            {/* Bulk Actions Floating Bar */}
+            {selectedKeys.length > 0 && (
+                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 animate-in slide-in-from-bottom-4 duration-300">
+                    <div className="bg-ui-bg-base border shadow-xl rounded-full px-6 py-3 flex items-center gap-6">
+                        <div className="flex items-center gap-2 pr-4 border-r">
+                            <div className="bg-ui-bg-interactive h-6 w-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold">
+                                {selectedKeys.length}
+                            </div>
+                            <Text className="text-sm font-medium">Items selected</Text>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="transparent"
+                                size="small"
+                                className="text-ui-fg-subtle hover:text-ui-fg-base"
+                                onClick={() => setSelectedKeys([])}
+                            >
+                                Clear selection
+                            </Button>
+                            <Button
+                                variant="danger"
+                                size="small"
+                                onClick={() => handleDelete(selectedKeys)}
+                                className="flex items-center gap-2"
+                            >
+                                <Trash />
+                                Delete Selected
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Pagination */}
             {!loading && files.length > 0 && (

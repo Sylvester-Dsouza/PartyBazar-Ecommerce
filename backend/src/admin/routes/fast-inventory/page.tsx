@@ -236,7 +236,12 @@ const VariantRow = ({ product, variant, locationId }: { product: Product, varian
             if (variant.sku) {
                 try {
                     const res = await fetch(`/admin/inventory-items?sku=${variant.sku}`, { credentials: "include" })
+                    if (!res.ok) {
+                        console.error(`Failed to fetch inventory item for SKU ${variant.sku}:`, res.statusText)
+                        return
+                    }
                     const data = await res.json()
+                    console.log(`Inventory data for SKU ${variant.sku}:`, data)
                     const item = data.inventory_items?.[0]
                     if (item) {
                         const level = item.location_levels?.find((l: any) => l.location_id === locationId)
@@ -244,9 +249,11 @@ const VariantRow = ({ product, variant, locationId }: { product: Product, varian
                         setInventoryItem({ ...item, location_levels: level ? [level] : [] })
                         setOnHand(stock)
                         setInitialOnHand(stock)
+                    } else {
+                        console.warn(`No inventory item found for SKU: ${variant.sku}`)
                     }
                 } catch (e) {
-                    // ignore
+                    console.error(`Error fetching inventory for SKU ${variant.sku}:`, e)
                 }
             }
 
@@ -263,10 +270,12 @@ const VariantRow = ({ product, variant, locationId }: { product: Product, varian
 
     const handleSave = async () => {
         setIsSaving(true)
+        console.log("Saving changes for variant:", variant.sku || variant.id)
         try {
             // Update Inventory
             if (inventoryItem && onHand !== initialOnHand) {
-                await fetch(`/admin/inventory-items/${inventoryItem.id}/location-levels/${locationId}`, {
+                console.log(`Updating inventory for ${inventoryItem.id} at ${locationId} to ${onHand}`)
+                const res = await fetch(`/admin/inventory-items/${inventoryItem.id}/location-levels/${locationId}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
@@ -274,12 +283,20 @@ const VariantRow = ({ product, variant, locationId }: { product: Product, varian
                         stocked_quantity: Number(onHand)
                     })
                 })
+
+                if (!res.ok) {
+                    const error = await res.json()
+                    console.error("Inventory update response error:", error)
+                    throw new Error(error.message || "Failed to update inventory level")
+                }
+                console.log("Inventory update successful")
             }
 
             // Update Price & SKU
             const shouldUpdateVariant = (price !== initialPrice) || (sku !== initialSku)
 
             if (shouldUpdateVariant) {
+                console.log(`Updating variant details: price=${price}, sku=${sku}`)
                 const currencyToUpdate = 'inr'
                 const existingPrices = variant.prices || []
 
@@ -293,12 +310,19 @@ const VariantRow = ({ product, variant, locationId }: { product: Product, varian
                 if (price !== initialPrice) payload.prices = newPrices
                 if (sku !== initialSku) payload.sku = sku
 
-                await fetch(`/admin/products/${product.id}/variants/${variant.id}`, {
+                const res = await fetch(`/admin/products/${product.id}/variants/${variant.id}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
                     body: JSON.stringify(payload)
                 })
+
+                if (!res.ok) {
+                    const error = await res.json()
+                    console.error("Variant update response error:", error)
+                    throw new Error(error.message || "Failed to update variant")
+                }
+                console.log("Variant update successful")
             }
 
             // Sync initial state
@@ -307,9 +331,9 @@ const VariantRow = ({ product, variant, locationId }: { product: Product, varian
             setInitialSku(sku)
 
             toast.success("Saved")
-        } catch (e) {
-            console.error(e)
-            toast.error("Failed to save")
+        } catch (e: any) {
+            console.error("Save error:", e)
+            toast.error(e.message || "Failed to save")
         } finally {
             setIsSaving(false)
         }
@@ -380,6 +404,7 @@ const VariantRow = ({ product, variant, locationId }: { product: Product, varian
 export const config = defineRouteConfig({
     label: "Fast Inventory",
     icon: TagSolid,
+    nested: "/inventory",
 })
 
 export default FastInventoryPage

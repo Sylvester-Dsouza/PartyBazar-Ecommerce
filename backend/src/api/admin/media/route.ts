@@ -152,25 +152,44 @@ export async function DELETE(
     req: MedusaRequest,
     res: MedusaResponse
 ) {
-    const { key } = req.body as { key: string };
+    const { key, keys } = req.body as { key?: string, keys?: string[] };
 
-    if (!key) {
-        res.status(400).json({ message: "File key is required" });
+    if (!key && (!keys || !keys.length)) {
+        res.status(400).json({ message: "File key or keys are required" });
         return;
     }
 
     try {
-        const command = new DeleteObjectCommand({
-            Bucket: S3_BUCKET,
-            Key: key,
+        const deleteKeys = keys || [key as string];
+
+        // We can use DeleteObjectsCommand for bulk, but since we have a client already,
+        // we'll map over them to ensure each one is deleted and handled.
+        // AWS S3 DeleteObjects supports up to 1000 keys at once.
+        if (deleteKeys.length > 1) {
+            const { DeleteObjectsCommand } = await import("@aws-sdk/client-s3");
+            const command = new DeleteObjectsCommand({
+                Bucket: S3_BUCKET,
+                Delete: {
+                    Objects: deleteKeys.map(k => ({ Key: k })),
+                    Quiet: false
+                }
+            });
+            await s3Client.send(command);
+        } else {
+            const command = new DeleteObjectCommand({
+                Bucket: S3_BUCKET,
+                Key: deleteKeys[0],
+            });
+            await s3Client.send(command);
+        }
+
+        res.json({
+            message: deleteKeys.length > 1 ? "Files deleted successfully" : "File deleted successfully",
+            count: deleteKeys.length
         });
-
-        await s3Client.send(command);
-
-        res.json({ message: "File deleted successfully", key });
-    } catch (error) {
+    } catch (error: any) {
         console.error("S3 Delete Error:", error);
-        res.status(500).json({ message: "Failed to delete file", error: error.message });
+        res.status(500).json({ message: "Failed to delete file(s)", error: error.message });
     }
 }
 
